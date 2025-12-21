@@ -4,6 +4,7 @@ import { useQuickAuth,useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useRouter } from "next/navigation";
 import { minikitConfig } from "../minikit.config";
 import styles from "./page.module.css";
+import { Metadata } from 'next';
 
 interface AuthResponse {
   success: boolean;
@@ -13,8 +14,13 @@ interface AuthResponse {
     expiresAt?: number;
   };
   message?: string; // Error messages come as 'message' not 'error'
-}
+};
 
+export const metadata: Metadata = {
+  other: {
+    'base:app_id': '69479195d77c069a945be39f',
+  },
+};
 
 export default function Home() {
   const { isFrameReady, setFrameReady, context } = useMiniKit();
