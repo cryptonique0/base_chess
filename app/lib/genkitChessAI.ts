@@ -4,7 +4,6 @@ import {
   GameState,
   Move,
   generateLegalMoves,
-  GameStatus,
 } from './chessEngine';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
