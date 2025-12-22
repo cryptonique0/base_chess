@@ -22,6 +22,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .logo {
@@ -40,6 +41,31 @@
 .logoIcon {
   font-size: 2rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  -webkit-text-fill-color: initial;
+}
+
+.backBtn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(-2px);
+}
+
+.modeTag {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .userInfo {
@@ -60,8 +86,273 @@
 
 .main {
   flex: 1;
-  padding: 1.5rem 0;
+  padding: 1.5rem 1rem;
   overflow-y: auto;
+}
+
+/* Menu Styles */
+.menuContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.menuTitle {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.menuIcon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.menuTitle h2 {
+  margin: 0;
+  font-size: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.menuSubtitle {
+  margin: 0.5rem 0 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modeCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.modeCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.modeCard:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.modeIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.modeCard h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.modeCard p {
+  margin: 0 0 1.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+.difficultySelect {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.difficultySelect label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+}
+
+.select {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.select option {
+  background: #1a1a2e;
+  color: #ffffff;
+}
+
+.colorChoice {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.colorBtn {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colorBtn.white {
+  background: #f0d9b5;
+  color: #312e2b;
+}
+
+.colorBtn.white:hover {
+  background: #ffffff;
+}
+
+.colorBtn.black {
+  background: #312e2b;
+  color: #f0d9b5;
+}
+
+.colorBtn.black:hover {
+  background: #4a4540;
+}
+
+.colorBtn.random {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.colorBtn.random:hover {
+  opacity: 0.9;
+}
+
+.startBtn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.startBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Online Card Specific Styles */
+.onlineCard {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.onlineCard:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.onlineBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: rgba(102, 126, 234, 0.2);
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.onlineBadge span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.features {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.features h4 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.features ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.features li {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+}
+
+/* Game Layout */
+.gameLayout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.boardSection {
+  position: relative;
+}
+
+.thinkingIndicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 10;
+  font-weight: 500;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .gameView {
@@ -136,7 +427,15 @@
   }
 
   .main {
-    padding: 2rem 0;
+    padding: 2rem;
+  }
+
+  .modeCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features ul {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .gameView {
@@ -156,7 +455,7 @@
 /* Desktop */
 @media (min-width: 1024px) {
   .main {
-    padding: 2.5rem 0;
+    padding: 2.5rem;
   }
 
   .logo {
@@ -165,5 +464,24 @@
 
   .logoIcon {
     font-size: 2.5rem;
+  }
+
+  .gameLayout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .boardSection {
+    flex: 1;
+    max-width: 700px;
+  }
+
+  .sidePanel {
+    width: 320px;
+    flex-shrink: 0;
+  }
+
+  .features ul {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

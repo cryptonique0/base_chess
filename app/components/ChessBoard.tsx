@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import styles from './ChessBoard.module.css';
 
 const PIECE_SYMBOLS = {
@@ -157,7 +157,7 @@ export default function ChessBoard({
         ) : isMyTurn ? (
           <span className={styles.yourTurn}>Your Turn</span>
         ) : (
-          <span className={styles.opponentTurn}>Opponent's Turn</span>
+          <span className={styles.opponentTurn}>Opponent&apos;s Turn</span>
         )}
       </div>
     </div>

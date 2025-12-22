@@ -15,6 +15,10 @@ interface GameState {
   moveCount: number;
 }
 
+interface ContractError extends Error {
+  message: string;
+}
+
 export function useChessContract() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,9 +40,10 @@ export function useChessContract() {
         gameId: Math.floor(Math.random() * 1000),
         message: 'Game created successfully'
       };
-    } catch (err: any) {
-      setError(err.message || 'Failed to create game');
-      return { success: false, error: err.message };
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to create game');
+      return { success: false, error: contractError.message };
     } finally {
       setLoading(false);
     }
@@ -58,9 +63,10 @@ export function useChessContract() {
         success: true,
         message: 'Joined game successfully'
       };
-    } catch (err: any) {
-      setError(err.message || 'Failed to join game');
-      return { success: false, error: err.message };
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to join game');
+      return { success: false, error: contractError.message };
     } finally {
       setLoading(false);
     }
@@ -80,9 +86,10 @@ export function useChessContract() {
         success: true,
         message: 'Move made successfully'
       };
-    } catch (err: any) {
-      setError(err.message || 'Failed to make move');
-      return { success: false, error: err.message };
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to make move');
+      return { success: false, error: contractError.message };
     } finally {
       setLoading(false);
     }
@@ -108,8 +115,9 @@ export function useChessContract() {
         wager: '0.01',
         moveCount: 0
       };
-    } catch (err: any) {
-      setError(err.message || 'Failed to get game info');
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to get game info');
       return null;
     } finally {
       setLoading(false);
@@ -141,8 +149,9 @@ export function useChessContract() {
           timestamp: Math.floor(Date.now() / 1000) - 600
         }
       ];
-    } catch (err: any) {
-      setError(err.message || 'Failed to get open games');
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to get open games');
       return [];
     } finally {
       setLoading(false);
@@ -158,9 +167,10 @@ export function useChessContract() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       return { success: true, message: 'Timeout claimed successfully' };
-    } catch (err: any) {
-      setError(err.message || 'Failed to claim timeout');
-      return { success: false, error: err.message };
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to claim timeout');
+      return { success: false, error: contractError.message };
     } finally {
       setLoading(false);
     }
@@ -175,9 +185,10 @@ export function useChessContract() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       return { success: true, message: 'Draw offered successfully' };
-    } catch (err: any) {
-      setError(err.message || 'Failed to offer draw');
-      return { success: false, error: err.message };
+    } catch (err: unknown) {
+      const contractError = err as ContractError;
+      setError(contractError.message || 'Failed to offer draw');
+      return { success: false, error: contractError.message };
     } finally {
       setLoading(false);
     }

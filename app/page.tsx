@@ -1,160 +1,314 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useMiniKit } from "@coinbase/onchainkit/minikit";
-import ChessBoard from "./components/ChessBoard";
-import GameInfo from "./components/GameInfo";
-import GameLobby from "./components/GameLobby";
-import { useChessContract } from "./hooks/useChessContract";
-import styles from "./page.module.css";
+import { useState, useEffect, useCallback } from 'react';
+import ChessBoard from './components/ChessBoardNew';
+import GameControls from './components/GameControls';
+import MoveHistory from './components/MoveHistory';
+import GameLobbyOnline from './components/GameLobbyOnline';
+import OnlineGame from './components/OnlineGame';
+import { 
+  createInitialState, 
+  makeMove as applyMove, 
+  undoMove, 
+  GameState, 
+  Move,
+  GameStatus 
+} from './lib/chessEngine';
+import { getBestMove, Difficulty } from './lib/chessAI';
+import styles from './page.module.css';
 
-type ViewMode = 'lobby' | 'game';
+type GameMode = 'menu' | 'single-player' | 'multiplayer' | 'online-lobby' | 'online-game';
+type ColorChoice = 'white' | 'black' | 'random';
 
 export default function Home() {
-  const { isFrameReady, setFrameReady, context } = useMiniKit();
-  const [viewMode, setViewMode] = useState<ViewMode>('lobby');
-  const [currentGameId, setCurrentGameId] = useState<number | null>(null);
-  const [gameState, setGameState] = useState<any>(null);
-  const [playerAddress, setPlayerAddress] = useState<string>('');
-  
-  const {
-    loading,
-    error: contractError,
-    createGame,
-    joinGame,
-    makeMove,
-    getGameInfo,
-    getOpenGames
-  } = useChessContract();
+  const [gameMode, setGameMode] = useState<GameMode>('menu');
+  const [gameState, setGameState] = useState<GameState>(createInitialState());
+  const [isPlayerWhite, setIsPlayerWhite] = useState(true);
+  const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [lastMove, setLastMove] = useState<Move | null>(null);
+  const [isAIThinking, setIsAIThinking] = useState(false);
+  const [boardFlipped, setBoardFlipped] = useState(false);
+  const [onlineGameId, setOnlineGameId] = useState<number | null>(null);
 
-  const [openGames, setOpenGames] = useState<any[]>([]);
+  // Check if it's AI's turn
+  const isAITurn = gameMode === 'single-player' && gameState.isWhiteTurn !== isPlayerWhite;
+  const isGameOver = gameState.status === GameStatus.Checkmate || 
+                     gameState.status === GameStatus.Stalemate || 
+                     gameState.status === GameStatus.Draw;
 
-  // Initialize the miniapp
+  // AI makes a move
   useEffect(() => {
-    if (!isFrameReady) {
-      setFrameReady();
-    }
-  }, [setFrameReady, isFrameReady]);
+    if (!isAITurn || isGameOver || isAIThinking) return;
 
-  // Load open games when in lobby
-  useEffect(() => {
-    if (viewMode === 'lobby') {
-      loadOpenGames();
-    }
-  }, [viewMode]);
-
-  // Load game state when viewing a game
-  useEffect(() => {
-    if (currentGameId !== null) {
-      loadGameState();
-    }
-  }, [currentGameId]);
-
-  const loadOpenGames = async () => {
-    const games = await getOpenGames();
-    setOpenGames(games);
-  };
-
-  const loadGameState = async () => {
-    if (currentGameId === null) return;
-    const state = await getGameInfo(currentGameId);
-    if (state) {
-      setGameState(state);
-    }
-  };
-
-  const handleCreateGame = async (wager: string) => {
-    const result = await createGame('0x0000000000000000000000000000000000000000', wager);
-    if (result.success && result.gameId !== undefined) {
-      setCurrentGameId(result.gameId);
-      setViewMode('game');
-    }
-  };
-
-  const handleJoinGame = async (gameId: number, wager: string) => {
-    const result = await joinGame(gameId, wager);
-    if (result.success) {
-      setCurrentGameId(gameId);
-      setViewMode('game');
-    }
-  };
-
-  const handleMove = async (from: number, to: number) => {
-    if (currentGameId === null) return;
+    setIsAIThinking(true);
     
-    const result = await makeMove(currentGameId, from, to);
-    if (result.success) {
-      // Reload game state after move
-      await loadGameState();
+    // Add a small delay to make it feel more natural
+    const timer = setTimeout(() => {
+      const aiMove = getBestMove(gameState, difficulty);
+      if (aiMove) {
+        const newState = applyMove(gameState, aiMove);
+        setGameState(newState);
+        setLastMove(aiMove);
+      }
+      setIsAIThinking(false);
+    }, 300 + Math.random() * 500);
+
+    return () => clearTimeout(timer);
+  }, [isAITurn, isGameOver, gameState, difficulty, isAIThinking]);
+
+  const handleMove = useCallback((move: Move) => {
+    if (isAIThinking) return;
+    
+    const newState = applyMove(gameState, move);
+    setGameState(newState);
+    setLastMove(move);
+  }, [gameState, isAIThinking]);
+
+  const handleNewGame = useCallback(() => {
+    setGameState(createInitialState());
+    setLastMove(null);
+    setIsAIThinking(false);
+  }, []);
+
+  const handleUndo = useCallback(() => {
+    if (gameMode === 'single-player') {
+      // Undo both AI and player move
+      let newState = undoMove(gameState);
+      if (newState.moveHistory.length > 0 && newState.isWhiteTurn !== isPlayerWhite) {
+        newState = undoMove(newState);
+      }
+      setGameState(newState);
+      setLastMove(newState.moveHistory[newState.moveHistory.length - 1] || null);
+    } else {
+      const newState = undoMove(gameState);
+      setGameState(newState);
+      setLastMove(newState.moveHistory[newState.moveHistory.length - 1] || null);
     }
+  }, [gameState, gameMode, isPlayerWhite]);
+
+  const handleFlipBoard = useCallback(() => {
+    setBoardFlipped(!boardFlipped);
+  }, [boardFlipped]);
+
+  const handleDifficultyChange = useCallback((newDifficulty: Difficulty) => {
+    setDifficulty(newDifficulty);
+  }, []);
+
+  const startGame = (mode: GameMode, color: ColorChoice = 'white') => {
+    const isWhite = color === 'random' ? Math.random() > 0.5 : color === 'white';
+    setIsPlayerWhite(isWhite);
+    setBoardFlipped(!isWhite);
+    setGameState(createInitialState());
+    setLastMove(null);
+    setGameMode(mode);
+    setIsAIThinking(false);
   };
 
-  const handleBackToLobby = () => {
-    setCurrentGameId(null);
-    setGameState(null);
-    setViewMode('lobby');
+  const returnToMenu = () => {
+    setGameMode('menu');
+    setGameState(createInitialState());
+    setLastMove(null);
+    setIsAIThinking(false);
+    setOnlineGameId(null);
   };
 
-  // Determine if current user is white player
-  const isPlayerWhite = gameState && playerAddress && 
-    gameState.whitePlayer.toLowerCase() === playerAddress.toLowerCase();
+  const handleJoinOnlineGame = (gameId: number) => {
+    setOnlineGameId(gameId);
+    setGameMode('online-game');
+  };
+
+  // Render online lobby
+  if (gameMode === 'online-lobby') {
+    return (
+      <GameLobbyOnline 
+        onBack={returnToMenu}
+        onJoinGame={handleJoinOnlineGame}
+      />
+    );
+  }
+
+  // Render online game
+  if (gameMode === 'online-game' && onlineGameId !== null) {
+    return (
+      <OnlineGame 
+        gameId={onlineGameId}
+        onBack={() => setGameMode('online-lobby')}
+      />
+    );
+  }
+
+  // Render menu
+  if (gameMode === 'menu') {
+    return (
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <h1 className={styles.logo}>
+              <span className={styles.logoIcon}>♟</span>
+              Base Chess
+            </h1>
+          </div>
+        </header>
+
+        <main className={styles.main}>
+          <div className={styles.menuContainer}>
+            <div className={styles.menuTitle}>
+              <span className={styles.menuIcon}>♔</span>
+              <h2>Play Chess</h2>
+              <p className={styles.menuSubtitle}>Choose your game mode</p>
+            </div>
+
+            <div className={styles.modeCards}>
+              <div className={styles.modeCard}>
+                <div className={styles.modeIcon}>🤖</div>
+                <h3>Practice vs AI</h3>
+                <p>Sharpen your skills against the computer</p>
+                
+                <div className={styles.difficultySelect}>
+                  <label>Difficulty:</label>
+                  <select 
+                    value={difficulty} 
+                    onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+                    className={styles.select}
+                  >
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+
+                <div className={styles.colorChoice}>
+                  <button 
+                    className={`${styles.colorBtn} ${styles.white}`}
+                    onClick={() => startGame('single-player', 'white')}
+                  >
+                    ♔ Play White
+                  </button>
+                  <button 
+                    className={`${styles.colorBtn} ${styles.black}`}
+                    onClick={() => startGame('single-player', 'black')}
+                  >
+                    ♚ Play Black
+                  </button>
+                  <button 
+                    className={`${styles.colorBtn} ${styles.random}`}
+                    onClick={() => startGame('single-player', 'random')}
+                  >
+                    🎲 Random
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles.modeCard}>
+                <div className={styles.modeIcon}>👥</div>
+                <h3>Local Two Player</h3>
+                <p>Play with a friend on the same device</p>
+                
+                <button 
+                  className={styles.startBtn}
+                  onClick={() => startGame('multiplayer', 'white')}
+                >
+                  Start Game
+                </button>
+              </div>
+
+              <div className={`${styles.modeCard} ${styles.onlineCard}`}>
+                <div className={styles.modeIcon}>🌐</div>
+                <h3>Online Play</h3>
+                <p>Play on-chain against players worldwide</p>
+                <div className={styles.onlineBadge}>
+                  <span>⛓️ On Base Network</span>
+                </div>
+                
+                <button 
+                  className={styles.startBtn}
+                  onClick={() => setGameMode('online-lobby')}
+                >
+                  Enter Lobby
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.features}>
+              <h4>Features</h4>
+              <ul>
+                <li>✓ Full chess rules including castling & en passant</li>
+                <li>✓ Pawn promotion</li>
+                <li>✓ Legal move highlighting</li>
+                <li>✓ Check/checkmate/stalemate detection</li>
+                <li>✓ Move history & undo</li>
+                <li>✓ Three difficulty levels</li>
+                <li>✓ On-chain multiplayer on Base Network</li>
+                <li>✓ Wager ETH on games</li>
+              </ul>
+            </div>
+          </div>
+        </main>
+
+        <footer className={styles.footer}>
+          <p className={styles.footerText}>
+            Powered by Base Network • On-chain Chess
+          </p>
+        </footer>
+      </div>
+    );
+  }
+
+  // Render game
+  const displayAsWhite = boardFlipped ? !isPlayerWhite : isPlayerWhite;
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerContent}>
+          <button className={styles.backBtn} onClick={returnToMenu}>
+            ← Menu
+          </button>
           <h1 className={styles.logo}>
             <span className={styles.logoIcon}>♟</span>
             Base Chess
           </h1>
-          {context?.user && (
-            <div className={styles.userInfo}>
-              <span className={styles.userName}>{context.user.displayName || 'Player'}</span>
-            </div>
-          )}
+          <div className={styles.modeTag}>
+            {gameMode === 'single-player' ? '🤖 vs AI' : '👥 2 Players'}
+          </div>
         </div>
       </header>
 
       <main className={styles.main}>
-        {viewMode === 'lobby' ? (
-          <GameLobby
-            openGames={openGames}
-            onJoinGame={handleJoinGame}
-            onCreateGame={handleCreateGame}
-            loading={loading}
-          />
-        ) : (
-          <div className={styles.gameView}>
-            <button className={styles.backButton} onClick={handleBackToLobby}>
-              ← Back to Lobby
-            </button>
-            
-            {gameState && (
-              <>
-                <GameInfo
-                  whitePlayer={gameState.whitePlayer}
-                  blackPlayer={gameState.blackPlayer}
-                  isWhiteTurn={gameState.whiteTurn}
-                  moveCount={gameState.moveCount}
-                  wager={gameState.wager}
-                />
-                
-                <ChessBoard
-                  board={gameState.board}
-                  onMove={handleMove}
-                  isWhiteTurn={gameState.whiteTurn}
-                  isPlayerWhite={isPlayerWhite}
-                  disabled={gameState.state !== 0 || loading}
-                />
-
-                {contractError && (
-                  <div className={styles.error}>
-                    {contractError}
-                  </div>
-                )}
-              </>
+        <div className={styles.gameLayout}>
+          <div className={styles.boardSection}>
+            {isAIThinking && (
+              <div className={styles.thinkingIndicator}>
+                <span className={styles.spinner}></span>
+                AI is thinking...
+              </div>
             )}
+            
+            <ChessBoard
+              gameState={gameState}
+              onMove={handleMove}
+              isPlayerWhite={gameMode === 'multiplayer' ? gameState.isWhiteTurn : displayAsWhite}
+              disabled={isAIThinking || isAITurn}
+              lastMove={lastMove}
+              highlightLegalMoves={true}
+            />
           </div>
-        )}
+
+          <div className={styles.sidePanel}>
+            <GameControls
+              gameState={gameState}
+              onNewGame={handleNewGame}
+              onUndo={handleUndo}
+              onFlipBoard={handleFlipBoard}
+              difficulty={difficulty}
+              onDifficultyChange={handleDifficultyChange}
+              isPlayerWhite={displayAsWhite}
+              isSinglePlayer={gameMode === 'single-player'}
+              canUndo={gameState.moveHistory.length > 0}
+            />
+
+            <MoveHistory gameState={gameState} />
+          </div>
+        </div>
       </main>
 
       <footer className={styles.footer}>

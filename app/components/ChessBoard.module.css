@@ -93,22 +93,35 @@
 }
 
 .square.legalMove {
-  background-image: radial-gradient(circle, rgba(127, 166, 80, 0.4) 25%, transparent 25%);
+  cursor: pointer;
 }
 
 .square.legalMove:hover {
-  background-image: radial-gradient(circle, rgba(127, 166, 80, 0.6) 25%, transparent 25%);
+  opacity: 0.9;
 }
 
-.square.lastMove {
-  background-color: rgba(255, 255, 0, 0.3);
+.square.lastMove.light {
+  background: #cdd26a;
+}
+
+.square.lastMove.dark {
+  background: #aaa23a;
+}
+
+.square.dragging {
+  opacity: 0.3;
 }
 
 .piece {
   font-size: clamp(2rem, 8vw, 3.5rem);
   line-height: 1;
-  pointer-events: none;
+  cursor: grab;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s ease;
+}
+
+.piece:active {
+  cursor: grabbing;
 }
 
 .piece.white {
@@ -125,8 +138,18 @@
   position: absolute;
   width: 30%;
   height: 30%;
-  background: rgba(127, 166, 80, 0.5);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 50%;
+  pointer-events: none;
+}
+
+.captureIndicator {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 5px solid rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
   pointer-events: none;
 }
 
@@ -149,6 +172,80 @@
 
 .gameOver {
   color: #f44336;
+}
+
+/* Promotion Dialog */
+.promotionOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.promotionDialog {
+  background: #312e2b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.promotionDialog h3 {
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+}
+
+.promotionOptions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.promotionPiece {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 8px;
+  background: #f0d9b5;
+  cursor: pointer;
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.promotionPiece:hover {
+  background: #7fa650;
+  transform: scale(1.1);
+}
+
+.promotionPiece.white {
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.promotionPiece.black {
+  color: #000000;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Dragged Piece */
+.draggedPiece {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1001;
+  transform: translate(-50%, -50%);
+}
+
+.draggedPiece .piece {
+  font-size: 4rem;
 }
 
 /* Tablet and larger */
@@ -177,6 +274,12 @@
   .turnIndicator {
     font-size: 1.125rem;
   }
+
+  .promotionPiece {
+    width: 70px;
+    height: 70px;
+    font-size: 3rem;
+  }
 }
 
 /* Desktop */
@@ -191,5 +294,11 @@
 
   .piece {
     font-size: 4rem;
+  }
+
+  .promotionPiece {
+    width: 80px;
+    height: 80px;
+    font-size: 3.5rem;
   }
 }

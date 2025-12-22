@@ -1,0 +1,28 @@
+// Contract addresses for different networks
+// Update these after deploying contracts
+
+export const CONTRACT_ADDRESSES = {
+  // Base Mainnet (Chain ID: 8453)
+  base: {
+    chess: process.env.NEXT_PUBLIC_CHESS_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessFactory: process.env.NEXT_PUBLIC_CHESS_FACTORY_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+  },
+  // Base Sepolia Testnet (Chain ID: 84532)
+  baseSepolia: {
+    chess: process.env.NEXT_PUBLIC_CHESS_CONTRACT_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessFactory: process.env.NEXT_PUBLIC_CHESS_FACTORY_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+  },
+} as const;
+
+// Get contract addresses for a specific chain
+export function getContractAddresses(chainId: number) {
+  switch (chainId) {
+    case 8453:
+      return CONTRACT_ADDRESSES.base;
+    case 84532:
+      return CONTRACT_ADDRESSES.baseSepolia;
+    default:
+      // Default to Base Sepolia for development
+      return CONTRACT_ADDRESSES.baseSepolia;
+  }
+}
