@@ -1,5 +1,5 @@
 "use client";
-import { Difficulty } from '../lib/chessAI';
+import { Difficulty } from '../lib/genkitChessAI';
 import { GameState, GameStatus } from '../lib/chessEngine';
 import styles from './GameControls.module.css';
 
