@@ -283,3 +283,214 @@ export const CHESS_FACTORY_ABI = [
     stateMutability: "payable"
   }
 ] as const;
+
+// ChessAcademy Contract ABI
+export const CHESS_ACADEMY_ABI = [
+  {
+    type: "function",
+    name: "getPlayerStats",
+    inputs: [{ name: "player", type: "address" }],
+    outputs: [
+      { name: "totalGamesAnalyzed", type: "uint256" },
+      { name: "totalLessons", type: "uint256" },
+      { name: "currentStreak", type: "uint256" },
+      { name: "longestStreak", type: "uint256" }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getAllSkillLevels",
+    inputs: [{ name: "player", type: "address" }],
+    outputs: [{ name: "", type: "uint256[6]" }],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "completeLesson",
+    inputs: [{ name: "lessonId", type: "uint256" }],
+    outputs: [],
+    stateMutability: "nonpayable"
+  },
+  {
+    type: "function",
+    name: "submitGameAnalysis",
+    inputs: [
+      { name: "gameId", type: "uint256" },
+      { name: "player", type: "address" },
+      { name: "skillChanges", type: "int256[]" },
+      { name: "weaknesses", type: "string[]" },
+      { name: "strengths", type: "string[]" },
+      { name: "accuracyScore", type: "uint256" }
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "nonpayable"
+  },
+  {
+    type: "function",
+    name: "getSkillLevel",
+    inputs: [
+      { name: "player", type: "address" },
+      { name: "category", type: "uint8" }
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "hasAchievement",
+    inputs: [
+      { name: "player", type: "address" },
+      { name: "achievementId", type: "uint256" }
+    ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view"
+  }
+] as const;
+
+// ChessCoach Contract ABI
+export const CHESS_COACH_ABI = [
+  {
+    type: "function",
+    name: "coaches",
+    inputs: [{ name: "", type: "address" }],
+    outputs: [
+      { name: "wallet", type: "address" },
+      { name: "name", type: "string" },
+      { name: "bio", type: "string" },
+      { name: "certificationURI", type: "string" },
+      { name: "hourlyRate", type: "uint256" },
+      { name: "rating", type: "uint256" },
+      { name: "totalSessions", type: "uint256" },
+      { name: "totalStudents", type: "uint256" },
+      { name: "totalEarnings", type: "uint256" },
+      { name: "isActive", type: "bool" },
+      { name: "isCertified", type: "bool" },
+      { name: "joinedTimestamp", type: "uint256" }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getActiveCoaches",
+    inputs: [],
+    outputs: [{ name: "", type: "address[]" }],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "registerAsCoach",
+    inputs: [
+      { name: "name", type: "string" },
+      { name: "bio", type: "string" },
+      { name: "hourlyRate", type: "uint256" },
+      { name: "specialtyIndices", type: "uint256[]" }
+    ],
+    outputs: [],
+    stateMutability: "nonpayable"
+  },
+  {
+    type: "function",
+    name: "bookSession",
+    inputs: [
+      { name: "coachAddress", type: "address" },
+      { name: "sessionType", type: "uint8" },
+      { name: "scheduledTime", type: "uint256" },
+      { name: "duration", type: "uint256" }
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "payable"
+  },
+  {
+    type: "function",
+    name: "rateCoach",
+    inputs: [
+      { name: "sessionId", type: "uint256" },
+      { name: "rating", type: "uint256" },
+      { name: "feedback", type: "string" }
+    ],
+    outputs: [],
+    stateMutability: "nonpayable"
+  },
+  {
+    type: "function",
+    name: "completeSession",
+    inputs: [
+      { name: "sessionId", type: "uint256" },
+      { name: "contentURI", type: "string" }
+    ],
+    outputs: [],
+    stateMutability: "nonpayable"
+  }
+] as const;
+
+// ChessPuzzles Contract ABI
+export const CHESS_PUZZLES_ABI = [
+  {
+    type: "function",
+    name: "puzzles",
+    inputs: [{ name: "", type: "uint256" }],
+    outputs: [
+      { name: "puzzleId", type: "uint256" },
+      { name: "fen", type: "string" },
+      { name: "theme", type: "uint8" },
+      { name: "difficulty", type: "uint8" },
+      { name: "rating", type: "uint256" },
+      { name: "creator", type: "address" },
+      { name: "createdTimestamp", type: "uint256" },
+      { name: "totalAttempts", type: "uint256" },
+      { name: "totalSolved", type: "uint256" },
+      { name: "isActive", type: "bool" },
+      { name: "rewardPool", type: "uint256" }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "getPlayerStats",
+    inputs: [{ name: "player", type: "address" }],
+    outputs: [
+      { name: "totalAttempts", type: "uint256" },
+      { name: "totalSolved", type: "uint256" },
+      { name: "currentStreak", type: "uint256" },
+      { name: "longestStreak", type: "uint256" },
+      { name: "rating", type: "uint256" },
+      { name: "totalRewards", type: "uint256" }
+    ],
+    stateMutability: "view"
+  },
+  {
+    type: "function",
+    name: "createPuzzle",
+    inputs: [
+      { name: "fen", type: "string" },
+      { name: "solution", type: "string[]" },
+      { name: "theme", type: "uint8" },
+      { name: "difficulty", type: "uint8" },
+      { name: "estimatedRating", type: "uint256" }
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+    stateMutability: "payable"
+  },
+  {
+    type: "function",
+    name: "attemptPuzzle",
+    inputs: [
+      { name: "puzzleId", type: "uint256" },
+      { name: "moveSequence", type: "string[]" },
+      { name: "timeSpent", type: "uint256" }
+    ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "nonpayable"
+  },
+  {
+    type: "function",
+    name: "hasSolvedPuzzle",
+    inputs: [
+      { name: "player", type: "address" },
+      { name: "puzzleId", type: "uint256" }
+    ],
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view"
+  }
+] as const;

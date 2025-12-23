@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useChessAcademy } from '../hooks/useAdvancedContracts';
 import styles from './LearningDashboard.module.css';
 
@@ -12,18 +12,8 @@ const SKILL_CATEGORIES = [
 ];
 
 export default function LearningDashboard() {
-  const { playerStats, skillLevels, completeLesson, isLoading } = useChessAcademy();
-  const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
-
-  const handleCompleteLesson = async (lessonId: number) => {
-    try {
-      await completeLesson(lessonId);
-      alert('Lesson completed! Skill points earned.');
-    } catch (error) {
-      console.error('Error completing lesson:', error);
-      alert('Failed to complete lesson');
-    }
-  };
+  const { playerStats, skillLevels } = useChessAcademy();
+  const [_selectedLesson, _setSelectedLesson] = useState<number | null>(null);
 
   return (
     <div className={styles.dashboard}>

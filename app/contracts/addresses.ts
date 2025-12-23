@@ -6,11 +6,17 @@ export const CONTRACT_ADDRESSES = {
   base: {
     chess: process.env.NEXT_PUBLIC_CHESS_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
     chessFactory: process.env.NEXT_PUBLIC_CHESS_FACTORY_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessAcademy: process.env.NEXT_PUBLIC_CHESS_ACADEMY_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessCoach: process.env.NEXT_PUBLIC_CHESS_COACH_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessPuzzles: process.env.NEXT_PUBLIC_CHESS_PUZZLES_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
   },
   // Base Sepolia Testnet (Chain ID: 84532)
   baseSepolia: {
     chess: process.env.NEXT_PUBLIC_CHESS_CONTRACT_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
     chessFactory: process.env.NEXT_PUBLIC_CHESS_FACTORY_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessAcademy: process.env.NEXT_PUBLIC_CHESS_ACADEMY_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessCoach: process.env.NEXT_PUBLIC_CHESS_COACH_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessPuzzles: process.env.NEXT_PUBLIC_CHESS_PUZZLES_ADDRESS_SEPOLIA as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
   },
 } as const;
 
@@ -26,3 +32,8 @@ export function getContractAddresses(chainId: number) {
       return CONTRACT_ADDRESSES.baseSepolia;
   }
 }
+
+// Export individual addresses for convenience (defaults to Base Sepolia)
+export const CHESS_ACADEMY_ADDRESS = CONTRACT_ADDRESSES.baseSepolia.chessAcademy;
+export const CHESS_COACH_ADDRESS = CONTRACT_ADDRESSES.baseSepolia.chessCoach;
+export const CHESS_PUZZLES_ADDRESS = CONTRACT_ADDRESSES.baseSepolia.chessPuzzles;
