@@ -14,7 +14,7 @@ const THEMES = ['Checkmate', 'Tactics', 'Endgame', 'Opening', 'Middlegame', 'Tra
 const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'];
 
 export default function PuzzleTraining() {
-  const { puzzleStats, attemptPuzzle, isLoading } = useChessPuzzles();
+  const { puzzleStats, attemptPuzzle } = useChessPuzzles();
   const [currentPuzzle, setCurrentPuzzle] = useState<Puzzle | null>(null);
   const [userMoves, setUserMoves] = useState<string[]>([]);
   const [startTime, setStartTime] = useState<number>(Date.now());
@@ -173,7 +173,7 @@ export default function PuzzleTraining() {
           <h2>🏆 Daily Challenge</h2>
           <span className={styles.timer}>Time left: 8:42:15</span>
         </div>
-        <p>Solve today's puzzle and compete for rewards!</p>
+        <p>Solve today&apos;s puzzle and compete for rewards!</p>
         <div className={styles.prizePool}>
           Prize Pool: <strong>0.1 ETH</strong>
         </div>

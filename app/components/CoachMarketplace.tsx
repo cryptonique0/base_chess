@@ -3,7 +3,7 @@ import { useChessCoach } from '../hooks/useAdvancedContracts';
 import styles from './CoachMarketplace.module.css';
 
 interface Coach {
-  address: string;
+  address: `0x${string}`;
   name: string;
   bio: string;
   hourlyRate: bigint;
@@ -13,14 +13,14 @@ interface Coach {
 }
 
 export default function CoachMarketplace() {
-  const { activeCoaches, bookSession, isLoading } = useChessCoach();
+  const { bookSession, isLoading } = useChessCoach();
   const [selectedCoach, setSelectedCoach] = useState<string | null>(null);
   const [sessionDuration, setSessionDuration] = useState(60);
   const [sessionDate, setSessionDate] = useState('');
 
   const mockCoaches: Coach[] = [
     {
-      address: '0x123...',
+      address: '0x1234567890123456789012345678901234567890' as `0x${string}`,
       name: 'GM Sarah Chen',
       bio: 'Grandmaster with 15 years of coaching experience',
       hourlyRate: BigInt('50000000000000000'), // 0.05 ETH
@@ -29,7 +29,7 @@ export default function CoachMarketplace() {
       specialties: ['Opening Theory', 'Tournament Preparation']
     },
     {
-      address: '0x456...',
+      address: '0x2345678901234567890123456789012345678901' as `0x${string}`,
       name: 'IM David Torres',
       bio: 'International Master specializing in tactical training',
       hourlyRate: BigInt('30000000000000000'), // 0.03 ETH
@@ -38,7 +38,7 @@ export default function CoachMarketplace() {
       specialties: ['Tactical Training', 'Blitz & Rapid']
     },
     {
-      address: '0x789...',
+      address: '0x3456789012345678901234567890123456789012' as `0x${string}`,
       name: 'FM Elena Petrov',
       bio: 'FIDE Master focused on endgame technique',
       hourlyRate: BigInt('25000000000000000'), // 0.025 ETH
@@ -48,7 +48,7 @@ export default function CoachMarketplace() {
     }
   ];
 
-  const handleBookSession = async (coachAddress: string, hourlyRate: bigint) => {
+  const handleBookSession = async (coachAddress: `0x${string}`, hourlyRate: bigint) => {
     if (!sessionDate) {
       alert('Please select a date and time');
       return;

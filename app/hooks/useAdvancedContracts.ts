@@ -2,7 +2,6 @@
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { CHESS_ACADEMY_ADDRESS, CHESS_COACH_ADDRESS, CHESS_PUZZLES_ADDRESS } from '../contracts/addresses';
 import { CHESS_ACADEMY_ABI, CHESS_COACH_ABI, CHESS_PUZZLES_ABI } from '../contracts/abis';
-import { useState } from 'react';
 
 // ChessAcademy Hook
 export function useChessAcademy() {
@@ -39,7 +38,7 @@ export function useChessAcademy() {
   // Submit game analysis
   const submitGameAnalysis = async (
     gameId: number,
-    player: string,
+    player: `0x${string}`,
     skillChanges: number[],
     weaknesses: string[],
     strengths: string[],
@@ -108,7 +107,7 @@ export function useChessCoach() {
 
   // Book coaching session
   const bookSession = async (
-    coachAddress: string,
+    coachAddress: `0x${string}`,
     sessionType: number,
     scheduledTime: number,
     duration: number,
