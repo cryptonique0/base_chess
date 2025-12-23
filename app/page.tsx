@@ -5,6 +5,9 @@ import GameControls from './components/GameControls';
 import MoveHistory from './components/MoveHistory';
 import GameLobbyOnline from './components/GameLobbyOnline';
 import OnlineGame from './components/OnlineGame';
+import LearningDashboard from './components/LearningDashboard';
+import CoachMarketplace from './components/CoachMarketplace';
+import PuzzleTraining from './components/PuzzleTraining';
 import { 
   createInitialState, 
   makeMove as applyMove, 
@@ -16,7 +19,7 @@ import {
 import { Difficulty } from './lib/genkitChessAI';
 import styles from './page.module.css';
 
-type GameMode = 'menu' | 'single-player' | 'multiplayer' | 'online-lobby' | 'online-game';
+type GameMode = 'menu' | 'single-player' | 'multiplayer' | 'online-lobby' | 'online-game' | 'learn' | 'coaches' | 'puzzles';
 type ColorChoice = 'white' | 'black' | 'random';
 
 export default function Home() {
@@ -175,6 +178,66 @@ export default function Home() {
     );
   }
 
+  // Render learning dashboard
+  if (gameMode === 'learn') {
+    return (
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <button className={styles.backBtn} onClick={returnToMenu}>
+              ← Menu
+            </button>
+            <h1 className={styles.logo}>
+              <span className={styles.logoIcon}>♟</span>
+              Base Chess
+            </h1>
+          </div>
+        </header>
+        <LearningDashboard />
+      </div>
+    );
+  }
+
+  // Render coach marketplace
+  if (gameMode === 'coaches') {
+    return (
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <button className={styles.backBtn} onClick={returnToMenu}>
+              ← Menu
+            </button>
+            <h1 className={styles.logo}>
+              <span className={styles.logoIcon}>♟</span>
+              Base Chess
+            </h1>
+          </div>
+        </header>
+        <CoachMarketplace />
+      </div>
+    );
+  }
+
+  // Render puzzle training
+  if (gameMode === 'puzzles') {
+    return (
+      <div className={styles.container}>
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <button className={styles.backBtn} onClick={returnToMenu}>
+              ← Menu
+            </button>
+            <h1 className={styles.logo}>
+              <span className={styles.logoIcon}>♟</span>
+              Base Chess
+            </h1>
+          </div>
+        </header>
+        <PuzzleTraining />
+      </div>
+    );
+  }
+
   // Render menu
   if (gameMode === 'menu') {
     return (
@@ -265,6 +328,54 @@ export default function Home() {
                   Enter Lobby
                 </button>
               </div>
+
+              <div className={`${styles.modeCard} ${styles.learningCard}`}>
+                <div className={styles.modeIcon}>🎓</div>
+                <h3>Learn Chess</h3>
+                <p>Track your progress and improve your skills</p>
+                <div className={styles.onlineBadge}>
+                  <span>⛓️ On-Chain Progress</span>
+                </div>
+                
+                <button 
+                  className={styles.startBtn}
+                  onClick={() => setGameMode('learn')}
+                >
+                  Start Learning
+                </button>
+              </div>
+
+              <div className={`${styles.modeCard} ${styles.coachCard}`}>
+                <div className={styles.modeIcon}>👨‍🏫</div>
+                <h3>Find a Coach</h3>
+                <p>Book sessions with certified chess coaches</p>
+                <div className={styles.onlineBadge}>
+                  <span>⛓️ Escrow Protected</span>
+                </div>
+                
+                <button 
+                  className={styles.startBtn}
+                  onClick={() => setGameMode('coaches')}
+                >
+                  Browse Coaches
+                </button>
+              </div>
+
+              <div className={`${styles.modeCard} ${styles.puzzleCard}`}>
+                <div className={styles.modeIcon}>🧩</div>
+                <h3>Solve Puzzles</h3>
+                <p>Train tactics and earn rewards</p>
+                <div className={styles.onlineBadge}>
+                  <span>⛓️ Earn ETH</span>
+                </div>
+                
+                <button 
+                  className={styles.startBtn}
+                  onClick={() => setGameMode('puzzles')}
+                >
+                  Start Training
+                </button>
+              </div>
             </div>
 
             <div className={styles.features}>
@@ -278,6 +389,9 @@ export default function Home() {
                 <li>✓ Three difficulty levels</li>
                 <li>✓ On-chain multiplayer on Base Network</li>
                 <li>✓ Wager ETH on games</li>
+                <li>✓ Learning paths & achievements</li>
+                <li>✓ Certified chess coaches</li>
+                <li>✓ Puzzle training with rewards</li>
               </ul>
             </div>
           </div>
