@@ -217,7 +217,8 @@ contract ChessCoach {
         
         // Refund excess payment
         if (msg.value > price) {
-            payable(msg.sender).transfer(msg.value - price);
+            (bool success, ) = payable(msg.sender).call{value: msg.value - price}("");
+            require(success, "Refund failed");
         }
         
         emit SessionBooked(sessionId, coachAddress, msg.sender, price);
@@ -293,8 +294,10 @@ contract ChessCoach {
         coach.totalEarnings += coachPayment;
         
         // Transfer payments
-        payable(session.coach).transfer(coachPayment);
-        payable(platformWallet).transfer(platformFee);
+        (bool successCoach, ) = payable(session.coach).call{value: coachPayment}("");
+        require(successCoach, "Coach payment failed");
+        (bool successPlatform, ) = payable(platformWallet).call{value: platformFee}("");
+        require(successPlatform, "Platform fee failed");
         
         emit PaymentReleased(sessionId, session.coach, coachPayment);
     }
@@ -316,20 +319,25 @@ contract ChessCoach {
         uint256 refundAmount = sessionEscrow[sessionId];
         if (msg.sender == session.coach) {
             // Coach cancels - full refund
-            payable(session.student).transfer(refundAmount);
+            (bool success, ) = payable(session.student).call{value: refundAmount}("");
+            require(success, "Refund failed");
         } else {
             // Student cancels
             uint256 timeUntilSession = session.scheduledTime - block.timestamp;
             if (timeUntilSession > 24 hours) {
                 // More than 24h notice - full refund
-                payable(session.student).transfer(refundAmount);
+                (bool success, ) = payable(session.student).call{value: refundAmount}("");
+                require(success, "Refund failed");
             } else if (timeUntilSession > 2 hours) {
                 // 2-24h notice - 50% refund
-                payable(session.student).transfer(refundAmount / 2);
-                payable(session.coach).transfer(refundAmount / 2);
+                (bool successStudent, ) = payable(session.student).call{value: refundAmount / 2}("");
+                require(successStudent, "Student refund failed");
+                (bool successCoach, ) = payable(session.coach).call{value: refundAmount / 2}("");
+                require(successCoach, "Coach payment failed");
             } else {
                 // Less than 2h notice - no refund
-                payable(session.coach).transfer(refundAmount);
+                (bool success, ) = payable(session.coach).call{value: refundAmount}("");
+                require(success, "Coach payment failed");
             }
         }
         
@@ -375,10 +383,12 @@ contract ChessCoach {
         sessionEscrow[sessionId] = 0;
         
         if (studentRefund > 0) {
-            payable(session.student).transfer(studentRefund);
+            (bool successStudent, ) = payable(session.student).call{value: studentRefund}("");
+            require(successStudent, "Student refund failed");
         }
         if (coachPayment > 0) {
-            payable(session.coach).transfer(coachPayment);
+            (bool successCoach, ) = payable(session.coach).call{value: coachPayment}("");
+            require(successCoach, "Coach payment failed");
         }
         
         session.status = SessionStatus.Completed;

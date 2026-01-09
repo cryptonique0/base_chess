@@ -6,9 +6,9 @@ export const CONTRACT_ADDRESSES = {
   base: {
     chess: process.env.NEXT_PUBLIC_CHESS_CONTRACT_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
     chessFactory: process.env.NEXT_PUBLIC_CHESS_FACTORY_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
-    chessAcademy: process.env.NEXT_PUBLIC_CHESS_ACADEMY_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessAcademy: process.env.NEXT_PUBLIC_CHESS_ACADEMY_ADDRESS as `0x${string}` || '0xd9145CCE52D386f254917e481eB44e9943F39138' as `0x${string}`,
     chessCoach: process.env.NEXT_PUBLIC_CHESS_COACH_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
-    chessPuzzles: process.env.NEXT_PUBLIC_CHESS_PUZZLES_ADDRESS as `0x${string}` || '0x0000000000000000000000000000000000000000' as `0x${string}`,
+    chessPuzzles: process.env.NEXT_PUBLIC_CHESS_PUZZLES_ADDRESS as `0x${string}` || '0x99CF4c4CAE3bA61754Abd22A8de7e8c7ba3C196d' as `0x${string}`,
   },
   // Base Sepolia Testnet (Chain ID: 84532)
   baseSepolia: {
