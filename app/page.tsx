@@ -122,7 +122,7 @@ export default function Home() {
             setLastMove(aiMove);
           }
         }
-      } catch (error) {
+      } catch {
         try {
           const { getBestMove } = await import('./lib/chessAI');
           const aiMove = getBestMove(gameState, difficulty);
