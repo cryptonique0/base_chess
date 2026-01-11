@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import ChessBoard from './components/ChessBoardNew';
 import GameControls from './components/GameControls';
 import MoveHistory from './components/MoveHistory';
@@ -9,14 +9,13 @@ import LearningDashboard from './components/LearningDashboard';
 import CoachMarketplace from './components/CoachMarketplace';
 import PuzzleTraining from './components/PuzzleTraining';
 import ThemeSwitcher from './components/ThemeSwitcher';
-import { 
-  createInitialState, 
-  makeMove as applyMove, 
-  undoMove, 
-  GameState, 
+import {
+  createInitialState,
+  makeMove as applyMove,
+  undoMove,
+  GameState,
   Move,
   GameStatus,
-  PieceType 
 } from './lib/chessEngine';
 import { Difficulty } from './lib/genkitChessAI';
 import styles from './page.module.css';
@@ -24,26 +23,22 @@ import styles from './page.module.css';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-const PIECE_SYMBOLS: Record<number, string> = {
-  [PieceType.WPawn]: '♙',
-  [PieceType.WKnight]: '♘',
-  [PieceType.WBishop]: '♗',
-  [PieceType.WRook]: '♖',
-  [PieceType.WQueen]: '♕',
-  [PieceType.WKing]: '♔',
-  [PieceType.BPawn]: '♟',
-  [PieceType.BKnight]: '♞',
-  [PieceType.BBishop]: '♝',
-  [PieceType.BRook]: '♜',
-  [PieceType.BQueen]: '♛',
-  [PieceType.BKing]: '♚',
-};
-
-type GameMode = 'menu' | 'single-player' | 'multiplayer' | 'online-lobby' | 'online-game' | 'learn' | 'coaches' | 'puzzles';
+type GameMode = 'single-player' | 'multiplayer';
 type ColorChoice = 'white' | 'black' | 'random';
+type OnlineView = 'lobby' | 'game';
+
+const SECTION_CONFIG = [
+  { id: 'overview', label: 'Overview', emoji: '📊' },
+  { id: 'play', label: 'Play', emoji: '♟️' },
+  { id: 'training', label: 'Training', emoji: '🎓' },
+  { id: 'coaches', label: 'Coaches', emoji: '🧑‍🏫' },
+  { id: 'puzzles', label: 'Puzzles', emoji: '🧩' },
+  { id: 'online', label: 'Online', emoji: '🌐' },
+  { id: 'settings', label: 'Settings', emoji: '⚙️' },
+];
 
 export default function Home() {
-  const [gameMode, setGameMode] = useState<GameMode>('menu');
+  const [gameMode, setGameMode] = useState<GameMode>('single-player');
   const [gameState, setGameState] = useState<GameState>(createInitialState());
   const [isPlayerWhite, setIsPlayerWhite] = useState(true);
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
@@ -51,31 +46,48 @@ export default function Home() {
   const [isAIThinking, setIsAIThinking] = useState(false);
   const [boardFlipped, setBoardFlipped] = useState(false);
   const [onlineGameId, setOnlineGameId] = useState<number | null>(null);
+  const [onlineView, setOnlineView] = useState<OnlineView>('lobby');
+  const [activeSection, setActiveSection] = useState<string>(SECTION_CONFIG[0].id);
 
-  // Check if it's AI's turn
   const isAITurn = gameMode === 'single-player' && gameState.isWhiteTurn !== isPlayerWhite;
-  const isGameOver = gameState.status === GameStatus.Checkmate || 
-                     gameState.status === GameStatus.Stalemate || 
-                     gameState.status === GameStatus.Draw;
+  const isGameOver = gameState.status === GameStatus.Checkmate ||
+    gameState.status === GameStatus.Stalemate ||
+    gameState.status === GameStatus.Draw;
 
-  // AI makes a move using Gemini GenKit
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-40% 0px -40% 0px', threshold: 0.2 }
+    );
+
+    SECTION_CONFIG.forEach((section) => {
+      const el = document.getElementById(section.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (!isAITurn || isGameOver || isAIThinking) return;
 
     setIsAIThinking(true);
-    
-    // Add a small delay to make it feel more natural
+
     const timer = setTimeout(async () => {
       try {
-        // Call the API route to get AI move with timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let data: any = null;
+        let data: unknown = null;
         try {
-          console.log('[Client] Fetching AI move...');
-          const fetchStart = Date.now();
           const response = await fetch('/api/ai-move', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -84,50 +96,43 @@ export default function Home() {
           });
 
           clearTimeout(timeoutId);
-          const fetchElapsed = Date.now() - fetchStart;
-          console.log('[Client] Fetch complete', { elapsed: `${fetchElapsed}ms`, status: response.status });
 
           if (!response.ok) {
-            console.error('[Client] API returned error', { status: response.status });
             throw new Error('Failed to get AI move');
           }
 
           data = await response.json();
-          console.log('[Client] AI move received', { from: data.move?.from, to: data.move?.to, reasoning: data.reasoning });
         } catch (err) {
           clearTimeout(timeoutId);
-          console.warn('[Client] Fetch failed, triggering fallback', { error: err instanceof Error ? err.message : String(err) });
           throw err;
         }
-        
-        if (data.move) {
-          const aiMove: Move = {
-            from: data.move.from,
-            to: data.move.to,
-            piece: gameState.board[data.move.from],
-            capturedPiece: gameState.board[data.move.to],
-          };
-          
-          console.log('[Client] Applying move', aiMove);
-          
-          const newState = applyMove(gameState, aiMove);
-          setGameState(newState);
-          setLastMove(aiMove);
+
+        if (typeof data === 'object' && data && 'move' in data) {
+          const moveData = (data as { move?: { from: number; to: number } }).move;
+          if (moveData) {
+            const aiMove: Move = {
+              from: moveData.from,
+              to: moveData.to,
+              piece: gameState.board[moveData.from],
+              capturedPiece: gameState.board[moveData.to],
+            };
+
+            const newState = applyMove(gameState, aiMove);
+            setGameState(newState);
+            setLastMove(aiMove);
+          }
         }
       } catch (error) {
-        console.error('[Client] Error in AI flow, using local fallback:', error);
-        // Fallback to local AI if API fails
         try {
           const { getBestMove } = await import('./lib/chessAI');
           const aiMove = getBestMove(gameState, difficulty);
           if (aiMove) {
-            console.log('[Client] Fallback move applied', aiMove);
             const newState = applyMove(gameState, aiMove);
             setGameState(newState);
             setLastMove(aiMove);
           }
         } catch (fallbackErr) {
-          console.error('[Client] Fallback also failed:', fallbackErr);
+          console.error('[Client] AI fallback failed:', fallbackErr);
         }
       } finally {
         setIsAIThinking(false);
@@ -137,13 +142,16 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [isAITurn, isGameOver, gameState, difficulty, isAIThinking]);
 
-  const handleMove = useCallback((move: Move) => {
-    if (isAIThinking) return;
-    
-    const newState = applyMove(gameState, move);
-    setGameState(newState);
-    setLastMove(move);
-  }, [gameState, isAIThinking]);
+  const handleMove = useCallback(
+    (move: Move) => {
+      if (isAIThinking) return;
+
+      const newState = applyMove(gameState, move);
+      setGameState(newState);
+      setLastMove(move);
+    },
+    [gameState, isAIThinking]
+  );
 
   const handleNewGame = useCallback(() => {
     setGameState(createInitialState());
@@ -153,7 +161,6 @@ export default function Home() {
 
   const handleUndo = useCallback(() => {
     if (gameMode === 'single-player') {
-      // Undo both AI and player move
       let newState = undoMove(gameState);
       if (newState.moveHistory.length > 0 && newState.isWhiteTurn !== isPlayerWhite) {
         newState = undoMove(newState);
@@ -185,174 +192,188 @@ export default function Home() {
     setIsAIThinking(false);
   };
 
-  const returnToMenu = () => {
-    setGameMode('menu');
-    setGameState(createInitialState());
-    setLastMove(null);
-    setIsAIThinking(false);
+  const handleJoinOnlineGame = (gameId: number) => {
+    setOnlineGameId(gameId);
+    setOnlineView('game');
+  };
+
+  const returnToLobby = () => {
+    setOnlineView('lobby');
     setOnlineGameId(null);
   };
 
-  const handleJoinOnlineGame = (gameId: number) => {
-    setOnlineGameId(gameId);
-    setGameMode('online-game');
+  const scrollToSection = (id: string) => {
+    setActiveSection(id);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Render online lobby
-  if (gameMode === 'online-lobby') {
-    return (
-      <GameLobbyOnline 
-        onBack={returnToMenu}
-        onJoinGame={handleJoinOnlineGame}
-      />
-    );
-  }
+  const displayAsWhite = boardFlipped ? !isPlayerWhite : isPlayerWhite;
 
-  // Render online game
-  if (gameMode === 'online-game' && onlineGameId !== null) {
-    return (
-      <OnlineGame 
-        gameId={onlineGameId}
-        onBack={() => setGameMode('online-lobby')}
-      />
-    );
-  }
+  const overviewStats = useMemo(
+    () => [
+      { label: 'Active Accounts', value: '45,678', trend: '+12.5%', tone: 'positive' },
+      { label: 'Puzzles Solved', value: '1,234', trend: '+4.3%', tone: 'positive' },
+      { label: 'Avg Accuracy', value: '92%', trend: '-1.2%', tone: 'neutral' },
+      { label: 'Win Rate', value: '58%', trend: '+2.8%', tone: 'positive' },
+    ],
+    []
+  );
 
-  // Render learning dashboard
-  if (gameMode === 'learn') {
-    return (
-      <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <button className={styles.backBtn} onClick={returnToMenu}>
-              ← Menu
+  const boardModeLabel = gameMode === 'single-player' ? 'Practice vs AI' : 'Local Two Player';
+
+  return (
+    <div className={styles.appShell}>
+      <aside className={styles.sidebar}>
+        <div className={styles.brand}>
+          <div className={styles.brandMark}>♟</div>
+          <div>
+            <p className={styles.brandLabel}>Base Chess</p>
+            <p className={styles.brandSub}>On-chain learning</p>
+          </div>
+        </div>
+
+        <nav className={styles.navList}>
+          {SECTION_CONFIG.map((section) => (
+            <button
+              key={section.id}
+              className={activeSection === section.id ? styles.navItemActive : styles.navItem}
+              onClick={() => scrollToSection(section.id)}
+            >
+              <span className={styles.navEmoji}>{section.emoji}</span>
+              <span>{section.label}</span>
             </button>
-            <h1 className={styles.logo}>
-              <span className={styles.logoIcon}>♟</span>
-              Base Chess
-            </h1>
-            <ThemeSwitcher />
-          </div>
-        </header>
-        <LearningDashboard />
-      </div>
-    );
-  }
+          ))}
+        </nav>
 
-  // Render coach marketplace
-  if (gameMode === 'coaches') {
-    return (
-      <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <button className={styles.backBtn} onClick={returnToMenu}>
-              ← Menu
+        <div className={styles.sidebarFooter}>
+          <div className={styles.sidebarCard}>
+            <p className={styles.sidebarTitle}>Streak</p>
+            <p className={styles.sidebarValue}>12 days 🔥</p>
+            <p className={styles.sidebarHint}>Keep playing daily</p>
+          </div>
+          <div className={styles.sidebarCard}>
+            <p className={styles.sidebarTitle}>Leaderboard</p>
+            <p className={styles.sidebarValue}>#08</p>
+            <p className={styles.sidebarHint}>Top 10 on Base</p>
+          </div>
+        </div>
+      </aside>
+
+      <div className={styles.contentArea}>
+        <header className={styles.topbar}>
+          <div className={styles.topbarLeft}>
+            <p className={styles.eyebrow}>Dashboard</p>
+            <h1 className={styles.pageTitle}>Chess Control Room</h1>
+            <p className={styles.subtitle}>Layered overview of play, training, and on-chain actions.</p>
+          </div>
+          <div className={styles.topbarActions}>
+            <button className={styles.ghostButton} onClick={() => startGame('multiplayer', 'white')}>
+              Start Local Game
             </button>
-            <h1 className={styles.logo}>
-              <span className={styles.logoIcon}>♟</span>
-              Base Chess
-            </h1>
-            <ThemeSwitcher />
-          </div>
-        </header>
-        <CoachMarketplace />
-      </div>
-    );
-  }
-
-  // Render puzzle training
-  if (gameMode === 'puzzles') {
-    return (
-      <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <button className={styles.backBtn} onClick={returnToMenu}>
-              ← Menu
+            <button className={styles.primaryButton} onClick={() => startGame('single-player', 'random')}>
+              New AI Match
             </button>
-            <h1 className={styles.logo}>
-              <span className={styles.logoIcon}>♟</span>
-              Base Chess
-            </h1>
-            <ThemeSwitcher />
-          </div>
-        </header>
-        <PuzzleTraining />
-      </div>
-    );
-  }
-
-  // Render menu
-  if (gameMode === 'menu') {
-    return (
-      <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <h1 className={styles.logo}>
-              <span className={styles.logoIcon}>♟</span>
-              Base Chess
-            </h1>
             <ThemeSwitcher />
           </div>
         </header>
 
-        <main className={styles.main}>
-          <div className={styles.menuContainer}>
-            <div className={styles.heroSection}>
-              <div className={styles.chessPieces}>
-                <span className={styles.piece}>♔</span>
-                <span className={styles.piece}>♕</span>
-                <span className={styles.piece}>♖</span>
-                <span className={styles.piece}>♗</span>
-                <span className={styles.piece}>♘</span>
-                <span className={styles.piece}>♙</span>
+        <main className={styles.sectionStack}>
+          <section id="overview" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>Snapshot</p>
+                <h2 className={styles.sectionTitle}>Performance Overview</h2>
               </div>
-              <h2 className={styles.heroTitle}>Master the Game of Kings</h2>
-              <p className={styles.heroSubtitle}>
-                Play chess on-chain • Learn from the best • Earn rewards
-              </p>
-              <div className={styles.miniBoard}>
-                {[0, 1, 2, 3, 4, 5, 6, 7].map(row => (
-                  <div key={row} className={styles.boardRow}>
-                    {[0, 1, 2, 3, 4, 5, 6, 7].map(col => {
-                      const isLight = (row + col) % 2 === 0;
-                      const index = row * 8 + col;
-                      const piece = gameState.board[index];
-                      return (
-                        <div 
-                          key={col} 
-                          className={`${styles.miniSquare} ${isLight ? styles.light : styles.dark}`}
-                        >
-                          {piece !== 0 && (
-                            <span className={styles.miniPiece}>
-                              {PIECE_SYMBOLS[piece] || ''}
-                            </span>
-                          )}
-                        </div>
-                      );
-                    })}
+              <div className={styles.chipRow}>
+                <span className={styles.chip}>On-chain synced</span>
+                <span className={styles.chipSecondary}>Neutral theme</span>
+              </div>
+            </div>
+
+            <div className={styles.metricGrid}>
+              {overviewStats.map((stat) => (
+                <div key={stat.label} className={styles.metricCard}>
+                  <p className={styles.metricLabel}>{stat.label}</p>
+                  <div className={styles.metricValueRow}>
+                    <span className={styles.metricValue}>{stat.value}</span>
+                    <span className={stat.tone === 'positive' ? styles.trendPositive : styles.trendNeutral}>
+                      {stat.trend}
+                    </span>
                   </div>
-                ))}
+                  <p className={styles.metricHint}>Last 30 days</p>
+                </div>
+              ))}
+
+              <div className={styles.metricWide}>
+                <div className={styles.metricHeader}>
+                  <div>
+                    <p className={styles.metricLabel}>Engagement curve</p>
+                    <p className={styles.metricHint}>Sessions per day (3 months)</p>
+                  </div>
+                  <div className={styles.tabRow}>
+                    <button className={styles.tabActive}>90d</button>
+                    <button className={styles.tab}>30d</button>
+                    <button className={styles.tab}>7d</button>
+                  </div>
+                </div>
+                <div className={styles.chartPlaceholder}>
+                  <div className={styles.chartWave} />
+                  <div className={styles.chartWaveSecondary} />
+                </div>
               </div>
             </div>
-            
-            <div className={styles.menuTitle}>
-              <span className={styles.menuIcon}>🎮</span>
-              <h2>Choose Your Game Mode</h2>
-              <p className={styles.menuSubtitle}>Practice, compete, learn & earn</p>
+          </section>
+
+          <section id="play" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>Play</p>
+                <h2 className={styles.sectionTitle}>{boardModeLabel}</h2>
+                <p className={styles.subtitle}>Solid board layer with controls and live state.</p>
+              </div>
+              <div className={styles.segmentedControl}>
+                <button
+                  className={gameMode === 'single-player' ? styles.segmentActive : styles.segment}
+                  onClick={() => startGame('single-player', 'white')}
+                >
+                  🤖 vs AI
+                </button>
+                <button
+                  className={gameMode === 'multiplayer' ? styles.segmentActive : styles.segment}
+                  onClick={() => startGame('multiplayer', 'white')}
+                >
+                  👥 Local 2P
+                </button>
+              </div>
             </div>
 
-            <div className={styles.modeCards}>
-              <div className={styles.modeCard}>
-                <div className={styles.modeIcon}>🤖</div>
-                <h3>Practice vs AI</h3>
-                <p>Sharpen your skills against the computer</p>
-                
-                <div className={styles.difficultySelect}>
-                  <label>Difficulty:</label>
-                  <select 
-                    value={difficulty} 
-                    onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+            <div className={styles.playGrid}>
+              <div className={styles.boardPanel}>
+                {isAIThinking && (
+                  <div className={styles.thinkingIndicator}>
+                    <span className={styles.spinner} />
+                    AI is thinking...
+                  </div>
+                )}
+
+                <ChessBoard
+                  gameState={gameState}
+                  onMove={handleMove}
+                  isPlayerWhite={gameMode === 'multiplayer' ? gameState.isWhiteTurn : displayAsWhite}
+                  disabled={isAIThinking || isAITurn}
+                  lastMove={lastMove}
+                  highlightLegalMoves={true}
+                />
+              </div>
+
+              <div className={styles.controlsPanel}>
+                <div className={styles.inlineActions}>
+                  <label className={styles.fieldLabel}>Difficulty</label>
+                  <select
                     className={styles.select}
+                    value={difficulty}
+                    onChange={(e) => handleDifficultyChange(e.target.value as Difficulty)}
                   >
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -360,200 +381,140 @@ export default function Home() {
                   </select>
                 </div>
 
-                <div className={styles.colorChoice}>
-                  <button 
-                    className={`${styles.colorBtn} ${styles.white}`}
-                    onClick={() => startGame('single-player', 'white')}
-                  >
-                    ♔ Play White
-                  </button>
-                  <button 
-                    className={`${styles.colorBtn} ${styles.black}`}
-                    onClick={() => startGame('single-player', 'black')}
-                  >
-                    ♚ Play Black
-                  </button>
-                  <button 
-                    className={`${styles.colorBtn} ${styles.random}`}
-                    onClick={() => startGame('single-player', 'random')}
-                  >
-                    🎲 Random
-                  </button>
+                <div className={styles.inlineActions}>
+                  <label className={styles.fieldLabel}>Color</label>
+                  <div className={styles.pillRow}>
+                    <button className={styles.pill} onClick={() => startGame(gameMode, 'white')}>
+                      ♔ White
+                    </button>
+                    <button className={styles.pill} onClick={() => startGame(gameMode, 'black')}>
+                      ♚ Black
+                    </button>
+                    <button className={styles.pill} onClick={() => startGame(gameMode, 'random')}>
+                      🎲 Random
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className={styles.modeCard}>
-                <div className={styles.modeIcon}>👥</div>
-                <h3>Local Two Player</h3>
-                <p>Play with a friend on the same device</p>
-                
-                <button 
-                  className={styles.startBtn}
-                  onClick={() => startGame('multiplayer', 'white')}
+                <GameControls
+                  gameState={gameState}
+                  onNewGame={handleNewGame}
+                  onUndo={handleUndo}
+                  onFlipBoard={handleFlipBoard}
+                  difficulty={difficulty}
+                  onDifficultyChange={handleDifficultyChange}
+                  isPlayerWhite={displayAsWhite}
+                  isSinglePlayer={gameMode === 'single-player'}
+                  canUndo={gameState.moveHistory.length > 0}
+                />
+
+                <MoveHistory gameState={gameState} />
+              </div>
+            </div>
+          </section>
+
+          <section id="training" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>Learning</p>
+                <h2 className={styles.sectionTitle}>Learning Paths & Progress</h2>
+                <p className={styles.subtitle}>Track skills, lessons, and achievements in one stream.</p>
+              </div>
+              <div className={styles.chipRow}>
+                <span className={styles.chip}>Skill graph</span>
+                <span className={styles.chipSecondary}>Streak-safe</span>
+              </div>
+            </div>
+            <LearningDashboard />
+          </section>
+
+          <section id="coaches" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>Marketplace</p>
+                <h2 className={styles.sectionTitle}>Coach Directory</h2>
+                <p className={styles.subtitle}>Book time with high-rated instructors.</p>
+              </div>
+              <span className={styles.chip}>Escrow protected</span>
+            </div>
+            <CoachMarketplace />
+          </section>
+
+          <section id="puzzles" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>Tactics Lab</p>
+                <h2 className={styles.sectionTitle}>Puzzle Training</h2>
+                <p className={styles.subtitle}>Rapid reps with rewards.</p>
+              </div>
+              <span className={styles.chip}>ETH prize pool</span>
+            </div>
+            <PuzzleTraining />
+          </section>
+
+          <section id="online" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>On-chain</p>
+                <h2 className={styles.sectionTitle}>Online Lobby</h2>
+                <p className={styles.subtitle}>Base network multiplayer with staking-ready flow.</p>
+              </div>
+              <div className={styles.segmentedControl}>
+                <button
+                  className={onlineView === 'lobby' ? styles.segmentActive : styles.segment}
+                  onClick={() => setOnlineView('lobby')}
                 >
-                  Start Game
+                  Lobby
                 </button>
-              </div>
-
-              <div className={`${styles.modeCard} ${styles.onlineCard}`}>
-                <div className={styles.modeIcon}>🌐</div>
-                <h3>Online Play</h3>
-                <p>Play on-chain against players worldwide</p>
-                <div className={styles.onlineBadge}>
-                  <span>⛓️ On Base Network</span>
-                </div>
-                
-                <button 
-                  className={styles.startBtn}
-                  onClick={() => setGameMode('online-lobby')}
+                <button
+                  className={onlineView === 'game' ? styles.segmentActive : styles.segment}
+                  onClick={() => onlineGameId && setOnlineView('game')}
+                  disabled={!onlineGameId}
                 >
-                  Enter Lobby
-                </button>
-              </div>
-
-              <div className={`${styles.modeCard} ${styles.learningCard}`}>
-                <div className={styles.modeIcon}>🎓</div>
-                <h3>Learn Chess</h3>
-                <p>Track your progress and improve your skills</p>
-                <div className={styles.onlineBadge}>
-                  <span>⛓️ On-Chain Progress</span>
-                </div>
-                
-                <button 
-                  className={styles.startBtn}
-                  onClick={() => setGameMode('learn')}
-                >
-                  Start Learning
-                </button>
-              </div>
-
-              <div className={`${styles.modeCard} ${styles.coachCard}`}>
-                <div className={styles.modeIcon}>👨‍🏫</div>
-                <h3>Find a Coach</h3>
-                <p>Book sessions with certified chess coaches</p>
-                <div className={styles.onlineBadge}>
-                  <span>⛓️ Escrow Protected</span>
-                </div>
-                
-                <button 
-                  className={styles.startBtn}
-                  onClick={() => setGameMode('coaches')}
-                >
-                  Browse Coaches
-                </button>
-              </div>
-
-              <div className={`${styles.modeCard} ${styles.puzzleCard}`}>
-                <div className={styles.modeIcon}>🧩</div>
-                <h3>Solve Puzzles</h3>
-                <p>Train tactics and earn rewards</p>
-                <div className={styles.onlineBadge}>
-                  <span>⛓️ Earn ETH</span>
-                </div>
-                
-                <button 
-                  className={styles.startBtn}
-                  onClick={() => setGameMode('puzzles')}
-                >
-                  Start Training
+                  Active Game
                 </button>
               </div>
             </div>
 
-            <div className={styles.features}>
-              <h4>Features</h4>
-              <ul>
-                <li>✓ Full chess rules including castling & en passant</li>
-                <li>✓ Pawn promotion</li>
-                <li>✓ Legal move highlighting</li>
-                <li>✓ Check/checkmate/stalemate detection</li>
-                <li>✓ Move history & undo</li>
-                <li>✓ Three difficulty levels</li>
-                <li>✓ On-chain multiplayer on Base Network</li>
-                <li>✓ Wager ETH on games</li>
-                <li>✓ Learning paths & achievements</li>
-                <li>✓ Certified chess coaches</li>
-                <li>✓ Puzzle training with rewards</li>
-              </ul>
-            </div>
-          </div>
-        </main>
-
-        <footer className={styles.footer}>
-          <p className={styles.footerText}>
-            Powered by Base Network • On-chain Chess
-          </p>
-        </footer>
-      </div>
-    );
-  }
-
-  // Render game
-  const displayAsWhite = boardFlipped ? !isPlayerWhite : isPlayerWhite;
-
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <button className={styles.backBtn} onClick={returnToMenu}>
-            ← Menu
-          </button>
-          <h1 className={styles.logo}>
-            <span className={styles.logoIcon}>♟</span>
-            Base Chess
-          </h1>
-          <div className={styles.headerRight}>
-            <div className={styles.modeTag}>
-              {gameMode === 'single-player' ? '🤖 vs AI' : '👥 2 Players'}
-            </div>
-            <ThemeSwitcher />
-          </div>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-        <div className={styles.gameLayout}>
-          <div className={styles.boardSection}>
-            {isAIThinking && (
-              <div className={styles.thinkingIndicator}>
-                <span className={styles.spinner}></span>
-                AI is thinking...
-              </div>
+            {onlineView === 'game' && onlineGameId !== null ? (
+              <OnlineGame gameId={onlineGameId} onBack={returnToLobby} />
+            ) : (
+              <GameLobbyOnline onBack={() => setOnlineView('lobby')} onJoinGame={handleJoinOnlineGame} />
             )}
-            
-            <ChessBoard
-              gameState={gameState}
-              onMove={handleMove}
-              isPlayerWhite={gameMode === 'multiplayer' ? gameState.isWhiteTurn : displayAsWhite}
-              disabled={isAIThinking || isAITurn}
-              lastMove={lastMove}
-              highlightLegalMoves={true}
-            />
-          </div>
+          </section>
 
-          <div className={styles.sidePanel}>
-            <GameControls
-              gameState={gameState}
-              onNewGame={handleNewGame}
-              onUndo={handleUndo}
-              onFlipBoard={handleFlipBoard}
-              difficulty={difficulty}
-              onDifficultyChange={handleDifficultyChange}
-              isPlayerWhite={displayAsWhite}
-              isSinglePlayer={gameMode === 'single-player'}
-              canUndo={gameState.moveHistory.length > 0}
-            />
+          <section id="settings" className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.eyebrow}>Personalize</p>
+                <h2 className={styles.sectionTitle}>Preferences</h2>
+                <p className={styles.subtitle}>Theme, layout, and controls.</p>
+              </div>
+              <ThemeSwitcher />
+            </div>
 
-            <MoveHistory gameState={gameState} />
-          </div>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <p className={styles.footerText}>
-          Powered by Base Network • On-chain Chess
-        </p>
-      </footer>
+            <div className={styles.preferenceGrid}>
+              <div className={styles.preferenceCard}>
+                <p className={styles.metricLabel}>Board flip</p>
+                <p className={styles.metricHint}>Mirror the board instantly</p>
+                <button className={styles.primaryButton} onClick={handleFlipBoard}>Flip board</button>
+              </div>
+              <div className={styles.preferenceCard}>
+                <p className={styles.metricLabel}>New match</p>
+                <p className={styles.metricHint}>Start fresh and clear history</p>
+                <button className={styles.ghostButton} onClick={handleNewGame}>Reset game</button>
+              </div>
+              <div className={styles.preferenceCard}>
+                <p className={styles.metricLabel}>Undo stack</p>
+                <p className={styles.metricHint}>Rewind last turns</p>
+                <button className={styles.ghostButton} onClick={handleUndo} disabled={gameState.moveHistory.length === 0}>
+                  Undo move
+                </button>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }
