@@ -1,12 +1,12 @@
 // Deploy advanced chess contracts
-const hre = require("hardhat");
+import { ethers } from "hardhat";
 
 async function main() {
   console.log("Deploying advanced chess learning platform...");
 
   // Deploy ChessAcademy
   console.log("\n1. Deploying ChessAcademy...");
-  const ChessAcademy = await hre.ethers.getContractFactory("ChessAcademy");
+  const ChessAcademy = await ethers.getContractFactory("ChessAcademy");
   const academy = await ChessAcademy.deploy();
   await academy.waitForDeployment();
   const academyAddress = await academy.getAddress();
@@ -14,10 +14,10 @@ async function main() {
 
   // Deploy ChessCoach
   console.log("\n2. Deploying ChessCoach...");
-  const [deployer] = await hre.ethers.getSigners();
+  const [deployer] = await ethers.getSigners();
   const platformWallet = deployer.address; // Use deployer as platform wallet for now
   
-  const ChessCoach = await hre.ethers.getContractFactory("ChessCoach");
+  const ChessCoach = await ethers.getContractFactory("ChessCoach");
   const coach = await ChessCoach.deploy(platformWallet);
   await coach.waitForDeployment();
   const coachAddress = await coach.getAddress();
@@ -25,7 +25,7 @@ async function main() {
 
   // Deploy ChessPuzzles
   console.log("\n3. Deploying ChessPuzzles...");
-  const ChessPuzzles = await hre.ethers.getContractFactory("ChessPuzzles");
+  const ChessPuzzles = await ethers.getContractFactory("ChessPuzzles");
   const puzzles = await ChessPuzzles.deploy();
   await puzzles.waitForDeployment();
   const puzzlesAddress = await puzzles.getAddress();
@@ -89,14 +89,14 @@ async function main() {
     3, // Tactics
     1, // Intermediate
     1500,
-    { value: hre.ethers.parseEther("0.01") } // 0.01 ETH reward pool
+    { value: ethers.parseEther("0.01") } // 0.01 ETH reward pool
   );
   console.log("Created sample puzzle");
 
   // Fund the daily leaderboard prize pool
   console.log("\n5. Funding daily leaderboard prize pool...");
   await puzzles.fundLeaderboardPrizePool({
-    value: hre.ethers.parseEther("0.5") // Initial 0.5 ETH funding (5 days worth)
+    value: ethers.parseEther("0.5") // Initial 0.5 ETH funding (5 days worth)
   });
   console.log("Funded leaderboard prize pool with 0.5 ETH");
 
