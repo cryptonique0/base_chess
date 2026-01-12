@@ -18,6 +18,15 @@
     --success: #10b981;
     --error: #ef4444;
     --warning: #f59e0b;
+    /* RGB versions for rgba() use */
+    --primary-rgb: 102, 126, 234;
+    --secondary-rgb: 118, 75, 162;
+    --accent-rgb: 240, 147, 251;
+    --text-primary-rgb: 255, 255, 255;
+    --text-secondary-rgb: 255, 255, 255;
+    --success-rgb: 16, 185, 129;
+    --error-rgb: 239, 68, 68;
+    --warning-rgb: 245, 158, 11;
   }
 
   @media (prefers-color-scheme: dark) {

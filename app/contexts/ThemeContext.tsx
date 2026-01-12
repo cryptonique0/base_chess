@@ -194,6 +194,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const root = document.documentElement;
     const theme = currentTheme.colors;
     
+    // Set hex colors
     root.style.setProperty('--primary-bg', theme.primaryBg);
     root.style.setProperty('--secondary-bg', theme.secondaryBg);
     root.style.setProperty('--accent-bg', theme.accentBg);
@@ -210,8 +211,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--error', theme.error);
     root.style.setProperty('--warning', theme.warning);
     
-    // Log for debugging
-    console.log('Theme applied:', currentTheme.name, theme);
+    // Set RGB versions for use in rgba()
+    root.style.setProperty('--primary-rgb', hexToRgb(theme.primary));
+    root.style.setProperty('--secondary-rgb', hexToRgb(theme.secondary));
+    root.style.setProperty('--accent-rgb', hexToRgb(theme.accent));
+    root.style.setProperty('--text-primary-rgb', hexToRgb(theme.textPrimary));
+    root.style.setProperty('--text-secondary-rgb', hexToRgb(theme.textSecondary));
+    root.style.setProperty('--success-rgb', hexToRgb(theme.success));
+    root.style.setProperty('--error-rgb', hexToRgb(theme.error));
+    root.style.setProperty('--warning-rgb', hexToRgb(theme.warning));
   }, [currentTheme]);
 
   const setTheme = (name: ThemeName) => {
