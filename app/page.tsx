@@ -54,27 +54,7 @@ export default function Home() {
     gameState.status === GameStatus.Stalemate ||
     gameState.status === GameStatus.Draw;
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: '-40% 0px -40% 0px', threshold: 0.2 }
-    );
-
-    SECTION_CONFIG.forEach((section) => {
-      const el = document.getElementById(section.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!isAITurn || isGameOver || isAIThinking) return;
@@ -204,8 +184,6 @@ export default function Home() {
 
   const scrollToSection = (id: string) => {
     setActiveSection(id);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const displayAsWhite = boardFlipped ? !isPlayerWhite : isPlayerWhite;
@@ -279,53 +257,56 @@ export default function Home() {
         </header>
 
         <main className={styles.sectionStack}>
-          <section id="overview" className={styles.sectionCard}>
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.eyebrow}>Snapshot</p>
-                <h2 className={styles.sectionTitle}>Performance Overview</h2>
-              </div>
-              <div className={styles.chipRow}>
-                <span className={styles.chip}>On-chain synced</span>
-                <span className={styles.chipSecondary}>Neutral theme</span>
-              </div>
-            </div>
-
-            <div className={styles.metricGrid}>
-              {overviewStats.map((stat) => (
-                <div key={stat.label} className={styles.metricCard}>
-                  <p className={styles.metricLabel}>{stat.label}</p>
-                  <div className={styles.metricValueRow}>
-                    <span className={styles.metricValue}>{stat.value}</span>
-                    <span className={stat.tone === 'positive' ? styles.trendPositive : styles.trendNeutral}>
-                      {stat.trend}
-                    </span>
-                  </div>
-                  <p className={styles.metricHint}>Last 30 days</p>
+          {activeSection === 'overview' && (
+            <section id="overview" className={styles.sectionCard}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.eyebrow}>Snapshot</p>
+                  <h2 className={styles.sectionTitle}>Performance Overview</h2>
                 </div>
-              ))}
-
-              <div className={styles.metricWide}>
-                <div className={styles.metricHeader}>
-                  <div>
-                    <p className={styles.metricLabel}>Engagement curve</p>
-                    <p className={styles.metricHint}>Sessions per day (3 months)</p>
-                  </div>
-                  <div className={styles.tabRow}>
-                    <button className={styles.tabActive}>90d</button>
-                    <button className={styles.tab}>30d</button>
-                    <button className={styles.tab}>7d</button>
-                  </div>
-                </div>
-                <div className={styles.chartPlaceholder}>
-                  <div className={styles.chartWave} />
-                  <div className={styles.chartWaveSecondary} />
+                <div className={styles.chipRow}>
+                  <span className={styles.chip}>On-chain synced</span>
+                  <span className={styles.chipSecondary}>Neutral theme</span>
                 </div>
               </div>
-            </div>
-          </section>
 
-          <section id="play" className={styles.sectionCard}>
+              <div className={styles.metricGrid}>
+                {overviewStats.map((stat) => (
+                  <div key={stat.label} className={styles.metricCard}>
+                    <p className={styles.metricLabel}>{stat.label}</p>
+                    <div className={styles.metricValueRow}>
+                      <span className={styles.metricValue}>{stat.value}</span>
+                      <span className={stat.tone === 'positive' ? styles.trendPositive : styles.trendNeutral}>
+                        {stat.trend}
+                      </span>
+                    </div>
+                    <p className={styles.metricHint}>Last 30 days</p>
+                  </div>
+                ))}
+
+                <div className={styles.metricWide}>
+                  <div className={styles.metricHeader}>
+                    <div>
+                      <p className={styles.metricLabel}>Engagement curve</p>
+                      <p className={styles.metricHint}>Sessions per day (3 months)</p>
+                    </div>
+                    <div className={styles.tabRow}>
+                      <button className={styles.tabActive}>90d</button>
+                      <button className={styles.tab}>30d</button>
+                      <button className={styles.tab}>7d</button>
+                    </div>
+                  </div>
+                  <div className={styles.chartPlaceholder}>
+                    <div className={styles.chartWave} />
+                    <div className={styles.chartWaveSecondary} />
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {activeSection === 'play' && (
+            <section id="play" className={styles.sectionCard}>
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.eyebrow}>Play</p>
@@ -412,8 +393,10 @@ export default function Home() {
               </div>
             </div>
           </section>
+          )}
 
-          <section id="training" className={styles.sectionCard}>
+          {activeSection === 'training' && (
+            <section id="training" className={styles.sectionCard}>
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.eyebrow}>Learning</p>
@@ -427,8 +410,10 @@ export default function Home() {
             </div>
             <LearningDashboard />
           </section>
+          )}
 
-          <section id="coaches" className={styles.sectionCard}>
+          {activeSection === 'coaches' && (
+            <section id="coaches" className={styles.sectionCard}>
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.eyebrow}>Marketplace</p>
@@ -439,8 +424,10 @@ export default function Home() {
             </div>
             <CoachMarketplace />
           </section>
+          )}
 
-          <section id="puzzles" className={styles.sectionCard}>
+          {activeSection === 'puzzles' && (
+            <section id="puzzles" className={styles.sectionCard}>
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.eyebrow}>Tactics Lab</p>
@@ -451,8 +438,10 @@ export default function Home() {
             </div>
             <PuzzleTraining />
           </section>
+          )}
 
-          <section id="online" className={styles.sectionCard}>
+          {activeSection === 'online' && (
+            <section id="online" className={styles.sectionCard}>
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.eyebrow}>On-chain</p>
@@ -482,8 +471,10 @@ export default function Home() {
               <GameLobbyOnline onBack={() => setOnlineView('lobby')} onJoinGame={handleJoinOnlineGame} />
             )}
           </section>
+          )}
 
-          <section id="settings" className={styles.sectionCard}>
+          {activeSection === 'settings' && (
+            <section id="settings" className={styles.sectionCard}>
             <div className={styles.sectionHeader}>
               <div>
                 <p className={styles.eyebrow}>Personalize</p>
@@ -513,6 +504,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+          )}
         </main>
       </div>
     </div>
