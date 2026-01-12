@@ -81,12 +81,12 @@
   user-select: none;
 }
 
-.square.light {
-  background: var(--light-square, #f0d9b5);
+.light {
+  background: var(--light-square, #f0d9b5) !important;
 }
 
-.square.dark {
-  background: var(--dark-square, #b58863);
+.dark {
+  background: var(--dark-square, #b58863) !important;
 }
 
 .square:hover {
@@ -106,12 +106,12 @@
   opacity: 0.9;
 }
 
-.square.lastMove.light {
-  background: #cdd26a;
+.lastMove.light {
+  background: #cdd26a !important;
 }
 
-.square.lastMove.dark {
-  background: #aaa23a;
+.lastMove.dark {
+  background: #aaa23a !important;
 }
 
 .square.dragging {
