@@ -132,12 +132,12 @@
 
 .piece.white {
   color: #ffffff;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.8));
 }
 
 .piece.black {
-  color: #000000;
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.2));
+  color: #2c2c2c;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.4));
 }
 
 .moveIndicator {

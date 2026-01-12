@@ -118,7 +118,7 @@ export default function PuzzleBoard({
           <div className={styles.captureIndicator}></div>
         )}
         {piece !== PieceType.Empty && (
-          <div className={styles.piece}>
+          <div className={`${styles.piece} ${piece >= PieceType.WPawn && piece <= PieceType.WKing ? styles.white : styles.black}`}>
             {PIECE_SYMBOLS[piece]}
           </div>
         )}
