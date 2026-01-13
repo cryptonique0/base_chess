@@ -1,10 +1,13 @@
 
+'use client';
+
 import { useState } from 'react';
 import MobileAppLayout from '../../components/common/MobileAppLayout';
 import ChessBoard from '../../components/chess/ChessBoardNew';
 import GameControls from '../../components/features/GameControls';
 import { createInitialState, GameState, Move, GameStatus } from '../../lib/chessEngine';
 
+export default function PlayPage() {
   // Game state for demo (replace with real logic as needed)
   const [gameState, setGameState] = useState<GameState>(createInitialState());
   const [isPlayerWhite, setIsPlayerWhite] = useState(true);
