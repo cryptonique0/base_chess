@@ -1,3 +1,5 @@
+'use client';
+
 import MobileAppLayout from '../../components/common/MobileAppLayout';
 
 export default function TrainingPage() {
