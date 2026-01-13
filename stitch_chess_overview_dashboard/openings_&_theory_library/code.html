@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Openings &amp; Theory Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col max-w-[430px] mx-auto overflow-x-hidden border-x border-white/5 shadow-2xl">
+<!-- Top App Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 backdrop-blur-md">
+<div class="text-white flex size-12 shrink-0 items-center cursor-pointer">
+<span class="material-symbols-outlined text-black dark:text-white">arrow_back</span>
+</div>
+<div class="flex flex-col items-center">
+<h2 class="text-black dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Theory Library</h2>
+<div class="flex items-center gap-1">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-[10px] text-primary font-bold tracking-widest uppercase">Base Network</span>
+</div>
+</div>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent text-black dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
+<div class="text-[#9da6b9] flex border-none bg-white dark:bg-[#1c1f27] items-center justify-center pl-4 rounded-l-xl border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-xl text-black dark:text-white focus:outline-0 focus:ring-0 border-none bg-white dark:bg-[#1c1f27] focus:border-none h-full placeholder:text-[#9da6b9] px-4 pl-2 text-base font-normal leading-normal" placeholder="Search openings (e.g. Sicilian)"/>
+</div>
+</label>
+</div>
+<!-- Filters / Chips -->
+<div class="flex gap-3 px-4 py-2 overflow-x-auto no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary px-4 shadow-lg shadow-primary/20">
+<p class="text-white text-sm font-semibold leading-normal text-nowrap">All Openings</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1c1f27] px-4 border border-black/5 dark:border-white/5">
+<p class="text-black dark:text-[#9da6b9] text-sm font-medium leading-normal text-nowrap">Open Games</p>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1c1f27] px-4 border border-black/5 dark:border-white/5">
+<p class="text-black dark:text-[#9da6b9] text-sm font-medium leading-normal text-nowrap">Semi-Open</p>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-[#1c1f27] px-4 border border-black/5 dark:border-white/5">
+<p class="text-black dark:text-[#9da6b9] text-sm font-medium leading-normal text-nowrap">Closed</p>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+<!-- Featured Section -->
+<h2 class="text-black dark:text-white text-[20px] font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-6">Trending Theory</h2>
+<!-- Opening Detail Card (Expanded State Concept) -->
+<div class="p-4 pt-2">
+<div class="flex flex-col gap-4 rounded-xl bg-white dark:bg-[#1c1f27] p-5 shadow-xl border border-black/5 dark:border-white/10">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">ECO B33</span>
+<span class="flex items-center gap-1 text-[#9da6b9] text-[10px] font-medium">
+<span class="material-symbols-outlined text-[12px]">database</span>
+                                On-Chain Data
+                            </span>
+</div>
+<p class="text-black dark:text-white text-xl font-extrabold leading-tight">Sicilian: Sveshnikov</p>
+<p class="text-[#9da6b9] text-xs font-medium leading-normal flex items-center gap-1">
+                            Main Line: 1. e4 c5 2. Nf3 Nc6 3. d4 cxd4
+                        </p>
+</div>
+</div>
+<!-- Win Rate Analytics -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-[11px] font-bold text-[#9da6b9] uppercase">
+<span>White Win 32%</span>
+<span>Draw 24%</span>
+<span>Black Win 44%</span>
+</div>
+<div class="flex h-2.5 w-full rounded-full overflow-hidden">
+<div class="h-full bg-[#e2e8f0] dark:bg-white/20" style="width: 32%"></div>
+<div class="h-full bg-primary/40" style="width: 24%"></div>
+<div class="h-full bg-primary" style="width: 44%"></div>
+</div>
+</div>
+<!-- Interactive Mini Board Placeholder -->
+<div class="w-full aspect-square bg-center bg-no-repeat bg-cover rounded-lg relative overflow-hidden group border border-black/10 dark:border-white/5" data-alt="Top down view of a chess board showing the Sveshnikov variation" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBf3GmUUEZlL3RlJwTjpxDVrjiakAzMvxN8EpyKsKJKBzazGF3YOa5RuM_ri15lHrQ4OA5FbVZM_MlLGAzZO5Yx4UQqGLlLx7L-cI16jHfXSj4Ps1WOas28M7yFysQFtlTf4d6TeeYr0ATb1r8_zU7wZiuwGYeH8xQmZDcBS_2413Y8yUWDGTKKb_eBrEDT9MwBEBBKBATnt_OBUc3j0qnv7apZugXgSGmEXAA6AnPYQqvD-DDHfm9J_-Vsfo0cEs6ip9rBjw4lISzi");'>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-5xl">play_circle</span>
+</div>
+</div>
+<!-- Action Row -->
+<div class="flex gap-3 mt-1">
+<button class="flex-1 flex cursor-pointer items-center justify-center rounded-xl h-12 bg-primary text-white gap-2 text-sm font-bold shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-[20px]">school</span>
+<span class="truncate">Book a Lesson</span>
+</button>
+<button class="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-black/5 dark:bg-white/5 text-black dark:text-white">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+<h2 class="text-black dark:text-white text-[18px] font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">More Openings</h2>
+<!-- List of Other Openings -->
+<div class="flex flex-col gap-1 px-4 pb-8">
+<!-- Opening Card 1 -->
+<div class="flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-[#1c1f27] p-3 border border-black/5 dark:border-white/5 mb-2">
+<div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Small chess board diagram for Ruy Lopez" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGgup2Al48oZbzQhoXUM6m9dV2kJRVurFcx2synDrQcOKZxbrZCbc-K619QgzCmyh5Cx-lrAit94U0M9K0FsrmmtpJo0AONHZSOwIw2wA-gweQLFSP7CZDJ9bXXds2im_43ExV9nWgcV43yftOjN4dCVWT8UP4IHU7cbHpB0Wg9IpmL8K67ZqBt4bCGwaeLgWnNDCz7KUemZDyeudjnlrw4CPpaEfcAwD3W1CPdTAYIzjI3OWFkIautUA3nwghENVwviqCprs5UyP4");'></div>
+<div class="flex flex-1 flex-col gap-0.5">
+<p class="text-[#9da6b9] text-[10px] font-bold uppercase tracking-wider">ECO C60</p>
+<p class="text-black dark:text-white text-sm font-bold">Ruy Lopez (Spanish)</p>
+<div class="flex items-center gap-2">
+<span class="text-primary text-[11px] font-bold">54% Win Rate</span>
+<span class="text-[#9da6b9] text-[11px]">8.2k Games</span>
+</div>
+</div>
+<button class="flex size-10 items-center justify-center rounded-lg bg-black/5 dark:bg-white/5">
+<span class="material-symbols-outlined text-black dark:text-white">chevron_right</span>
+</button>
+</div>
+<!-- Opening Card 2 -->
+<div class="flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-[#1c1f27] p-3 border border-black/5 dark:border-white/5 mb-2">
+<div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Small chess board diagram for Queens Gambit" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAGoTzd_lJ425MORCEsXgl_BuwL-YVflmUu964OWNMY9Mc8enUBHlG0lIiB0ze1ybgvVG4pn3_pZN9fQ60uXXJ9tjGOMRJZVBeUZKX6ZD3vQmqGuic2shriruLcMd8dNYrbVofoJuXO1tqkTLvT4rUBGZ2kER599BJ1oP3TYCSLGDUtRFclirjVxADwmkTZedRdunRJM00RKR98nemFfNB5N_lYJ6sNzKFyWt7iuh9X9JCVYf2zsdS6BEofBS_CfOHcA2feliuyhy0P");'></div>
+<div class="flex flex-1 flex-col gap-0.5">
+<p class="text-[#9da6b9] text-[10px] font-bold uppercase tracking-wider">ECO D06</p>
+<p class="text-black dark:text-white text-sm font-bold">Queen's Gambit</p>
+<div class="flex items-center gap-2">
+<span class="text-primary text-[11px] font-bold">51% Win Rate</span>
+<span class="text-[#9da6b9] text-[11px]">12.5k Games</span>
+</div>
+</div>
+<button class="flex size-10 items-center justify-center rounded-lg bg-black/5 dark:bg-white/5">
+<span class="material-symbols-outlined text-black dark:text-white">chevron_right</span>
+</button>
+</div>
+<!-- Opening Card 3 -->
+<div class="flex items-center justify-between gap-4 rounded-xl bg-white dark:bg-[#1c1f27] p-3 border border-black/5 dark:border-white/5 mb-2">
+<div class="w-16 h-16 bg-center bg-no-repeat bg-cover rounded-lg" data-alt="Small chess board diagram for Caro-Kann" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA1yuAb8KqHihjtthKTpDNS-H0g_CkgqDsMsB3j_N10eRwUg5022RAm61XO4dnJDawU-R_blU8tvXbraYzDUiSvPg3Q7-geD2uv2iYhGbymzwxOBXI2o8rl8J9I0Al9Nzlr406LSkZrP_wRu_c64yAbPyCG49052tSDcOQUNcNLOOotE0PtsKj1ZM3hCS52lEOGczm1IzcSU1SGojtfAv0WeJnbIlRLdxDLirVFbXsivB26e2sA53n0Q8Wokrx59eWdjuqINZ6UQT0x");'></div>
+<div class="flex flex-1 flex-col gap-0.5">
+<p class="text-[#9da6b9] text-[10px] font-bold uppercase tracking-wider">ECO B10</p>
+<p class="text-black dark:text-white text-sm font-bold">Caro-Kann Defense</p>
+<div class="flex items-center gap-2">
+<span class="text-primary text-[11px] font-bold">48% Win Rate</span>
+<span class="text-[#9da6b9] text-[11px]">6.1k Games</span>
+</div>
+</div>
+<button class="flex size-10 items-center justify-center rounded-lg bg-black/5 dark:bg-white/5">
+<span class="material-symbols-outlined text-black dark:text-white">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Bottom Navigation (iOS Style) -->
+<div class="mt-auto sticky bottom-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-xl border-t border-black/10 dark:border-white/10 px-6 py-4 pb-8 flex justify-between items-center">
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined text-black dark:text-white">sports_esports</span>
+<span class="text-[10px] font-bold">Play</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-[10px] font-bold">Theory</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined text-black dark:text-white">storefront</span>
+<span class="text-[10px] font-bold">Market</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-50">
+<span class="material-symbols-outlined text-black dark:text-white">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</div>
+</div>
+</div>
+</body></html>
