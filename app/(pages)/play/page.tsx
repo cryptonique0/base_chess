@@ -1,7 +1,16 @@
-import MobileAppLayout from '../../components/common/MobileAppLayout';
 
-export default function PlayPage() {
-  // Placeholder data for demonstration
+import { useState } from 'react';
+import MobileAppLayout from '../../components/common/MobileAppLayout';
+import ChessBoard from '../../components/chess/ChessBoardNew';
+import GameControls from '../../components/features/GameControls';
+import { createInitialState, GameState, Move, GameStatus } from '../../lib/chessEngine';
+
+  // Game state for demo (replace with real logic as needed)
+  const [gameState, setGameState] = useState<GameState>(createInitialState());
+  const [isPlayerWhite, setIsPlayerWhite] = useState(true);
+  const [lastMove, setLastMove] = useState<Move | null>(null);
+
+  // Demo player/opponent info
   const player = {
     name: 'Grandmaster_X',
     avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBQ3HQrFfrNdnKSHXU4A49F9JihIeW9yKHIE07EjgOZ-OkNcksLfCqi07k7sOLht6noRlaIFyyAMgXVJrkPrWL_I_3-yvR2jyYe0E0batDnzQ-gqZHLzm7dsRcnHc67-uXKRTAwpYKb7EMTn5RlhoSsSoTbmitkNHcv_oD-FZXJCCIdGAJUYI3HLoTsTGDaldKtuwkYYkrFPVr45KlEdCKhDCuOJVKIgxscRbYkLIzG9InVYPmwyLMRWnkJ95bAZ1gdYiuqBpBeHkOW',
@@ -10,6 +19,7 @@ export default function PlayPage() {
     material: '♙♙♘',
     materialDiff: '+1 material',
   };
+
   return (
     <MobileAppLayout>
       {/* Top App Bar */}
@@ -57,11 +67,28 @@ export default function PlayPage() {
       {/* Chessboard Area */}
       <div className="flex-1 flex items-center justify-center p-2 bg-zinc-900/40">
         <div className="w-full aspect-square rounded-lg overflow-hidden shadow-2xl shadow-primary/20 border-4 border-zinc-800 flex items-center justify-center">
-          {/* TODO: Insert ChessBoard component here, styled for mobile */}
-          <span className="text-zinc-400">[ChessBoard]</span>
+          <ChessBoard
+            gameState={gameState}
+            onMove={() => {}}
+            isPlayerWhite={isPlayerWhite}
+            disabled={false}
+            lastMove={lastMove}
+            showCoordinates={false}
+            highlightLegalMoves={true}
+          />
         </div>
       </div>
-      {/* ...add move list, controls, and chat as needed... */}
+      {/* Mobile Controls */}
+      <div className="w-full px-4 pb-4">
+        <GameControls
+          gameState={gameState}
+          onNewGame={() => setGameState(createInitialState())}
+          onUndo={() => {}}
+          onFlipBoard={() => setIsPlayerWhite((w) => !w)}
+          isPlayerWhite={isPlayerWhite}
+          isSinglePlayer={true}
+        />
+      </div>
     </MobileAppLayout>
   );
 }
