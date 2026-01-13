@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useChessCoach } from '../hooks/useAdvancedContracts';
+import { useChessCoach } from '../../hooks/useAdvancedContracts';
 import {
   COACHES,
   SPECIALTIES,
@@ -16,7 +16,7 @@ import {
   sortCoachesByRating,
   sortCoachesByPrice,
   sortCoachesBySessions
-} from '../lib/coachData';
+} from '../../lib/coachData';
 import styles from './CoachMarketplace.module.css';
 
 type ViewMode = 'browse' | 'profile' | 'sessions';
