@@ -1,0 +1,75 @@
+.android-customizer {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 2px solid #4f46e5;
+  border-radius: 12px;
+  background: #f5f3ff;
+  font-family: Arial, sans-serif;
+}
+.android-customizer h2 {
+  color: #4f46e5;
+}
+.custom-section {
+  margin-bottom: 16px;
+}
+.wallpaper-list {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.wallpaper-list img {
+  width: 60px;
+  height: 40px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+.wallpaper-list img.selected {
+  border: 2px solid #4f46e5;
+}
+.custom-section label {
+  font-weight: bold;
+  margin-right: 8px;
+}
+.custom-section select {
+  padding: 6px 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+.preview-section {
+  margin-top: 24px;
+}
+.phone-preview {
+  width: 180px;
+  height: 320px;
+  margin: 0 auto;
+  border: 2px solid #4f46e5;
+  border-radius: 24px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px #a5b4fc;
+}
+.screen-content {
+  width: 90%;
+  height: 90%;
+  background: rgba(255,255,255,0.7);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+}
+.screensaver {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.theme, .font {
+  font-size: 0.95em;
+}
