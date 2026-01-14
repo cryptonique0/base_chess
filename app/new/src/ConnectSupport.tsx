@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from './NotificationContext';
 import './ConnectSupport.css';
 
 interface Message {
@@ -11,6 +12,7 @@ function ConnectSupport() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [user, setUser] = useState('');
+  const { showNotification } = useNotification();
 
   const sendMessage = () => {
     if (!input.trim() || !user.trim()) return;
@@ -19,6 +21,7 @@ function ConnectSupport() {
       { id: messages.length + 1, user, text: input }
     ]);
     setInput('');
+    showNotification('Message sent!');
   };
 
   return (
