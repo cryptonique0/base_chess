@@ -1,0 +1,30 @@
+.home-electrical-guide {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 2px solid #0d9488;
+  border-radius: 12px;
+  background: #f0fdfa;
+  font-family: Arial, sans-serif;
+}
+.home-electrical-guide h2 {
+  color: #0d9488;
+}
+.appliance-select {
+  margin-bottom: 16px;
+}
+.appliance-select select {
+  margin-left: 8px;
+  padding: 6px 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+.steps-section {
+  margin-top: 16px;
+}
+.steps-section ol {
+  padding-left: 20px;
+}
+.steps-section li {
+  margin-bottom: 8px;
+}
