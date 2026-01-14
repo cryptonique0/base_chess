@@ -14,6 +14,7 @@ import IslamicLoanApp from './IslamicLoanApp';
 import MenstrualCycleMonitor from './MenstrualCycleMonitor';
 import AdvancedEduApp from './AdvancedEduApp';
 import BodyTempDetector from './BodyTempDetector';
+import DeviceTracker from './DeviceTracker';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
       <MenstrualCycleMonitor />
       <AdvancedEduApp />
       <BodyTempDetector />
+      <DeviceTracker />
     </div>
   );
 }
