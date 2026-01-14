@@ -43,6 +43,7 @@ function ForeignCars() {
         <div className="cars-list">
           {cars.map(car => (
             <div key={car.id} className="car-item">
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={car.image} alt={car.name} />
               <div>{car.name}</div>
               <div>₦{car.price.toLocaleString()}</div>
