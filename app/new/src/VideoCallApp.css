@@ -1,0 +1,39 @@
+.video-call-app {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 2px solid #6366f1;
+  border-radius: 12px;
+  background: #f5f3ff;
+  font-family: Arial, sans-serif;
+}
+.video-call-app h2 {
+  color: #4338ca;
+}
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.controls button {
+  padding: 6px 16px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.error {
+  color: #b91c1c;
+  margin-bottom: 10px;
+}
+.video-section {
+  margin-bottom: 12px;
+}
+.external-app-info {
+  font-size: 0.95em;
+  color: #555;
+  background: #e0e7ff;
+  padding: 8px;
+  border-radius: 6px;
+}
