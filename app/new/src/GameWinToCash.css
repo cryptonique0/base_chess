@@ -1,0 +1,41 @@
+.game-win-to-cash {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 2px solid #1e3a8a;
+  border-radius: 12px;
+  background: #f0f6ff;
+  font-family: Arial, sans-serif;
+}
+.game-win-to-cash h2 {
+  color: #1e3a8a;
+}
+.win-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.win-section button {
+  padding: 6px 12px;
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.rate-section {
+  margin-bottom: 16px;
+}
+.rate-section input {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+.cash-section {
+  font-size: 1.2em;
+  color: #1e3a8a;
+  font-weight: bold;
+}
