@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from './NotificationContext';
 import './AdmittedStudents.css';
 
 interface Student {
@@ -11,6 +12,7 @@ function AdmittedStudents() {
   const [students, setStudents] = useState<Student[]>([]);
   const [name, setName] = useState('');
   const [department, setDepartment] = useState('');
+  const { showNotification } = useNotification();
 
   const addStudent = () => {
     if (!name.trim() || !department.trim()) return;
@@ -20,6 +22,7 @@ function AdmittedStudents() {
     ]);
     setName('');
     setDepartment('');
+    showNotification(`${name} admitted to ${department}!`);
   };
 
   return (
