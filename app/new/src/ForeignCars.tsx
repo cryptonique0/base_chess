@@ -28,15 +28,19 @@ const accessories: Accessory[] = [
 
 function ForeignCars() {
   const [cart, setCart] = useState<{ name: string; price: number }[]>([]);
+  const [notification, setNotification] = useState('');
 
   const addToCart = (item: { name: string; price: number }) => {
     setCart([...cart, item]);
+    setNotification(`${item.name} added to cart!`);
+    setTimeout(() => setNotification(''), 2000);
   };
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <div className="foreign-cars-app">
+      {notification && <div className="notification">{notification}</div>}
       <h2>Foreign Used Cars</h2>
       <div className="cars-section">
         <h3>Cars for Sale</h3>
@@ -44,7 +48,7 @@ function ForeignCars() {
           {cars.map(car => (
             // eslint-disable-next-line react/jsx-no-comment-textnodes
             <div key={car.id} className="car-item">
-              // eslint-disable-next-line @next/next/no-img-element, @next/next/no-img-element
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={car.image} alt={car.name} />
               <div>{car.name}</div>
               <div>₦{car.price.toLocaleString()}</div>
