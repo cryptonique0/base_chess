@@ -1,0 +1,58 @@
+.foreign-cars-app {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  background: #f1f5f9;
+  font-family: Arial, sans-serif;
+}
+.foreign-cars-app h2 {
+  color: #1e293b;
+}
+.cars-section, .accessories-section {
+  margin-bottom: 24px;
+}
+.cars-list, .accessories-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.car-item, .accessory-item {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  width: 150px;
+  text-align: center;
+}
+.car-item img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+.car-item button, .accessory-item button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #334155;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.cart-section {
+  margin-top: 24px;
+}
+.cart-section ul {
+  list-style: none;
+  padding: 0;
+}
+.cart-section li {
+  margin-bottom: 6px;
+}
+.total {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #1e293b;
+}
