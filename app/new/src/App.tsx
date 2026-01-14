@@ -8,6 +8,7 @@ import AdmittedStudents from './AdmittedStudents';
 import GameWinToCash from './GameWinToCash';
 import HomeElectricalGuide from './HomeElectricalGuide';
 import VideoCallApp from './VideoCallApp';
+import UnzipperApp from './UnzipperApp';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <GameWinToCash />
       <HomeElectricalGuide />
       <VideoCallApp />
+      <UnzipperApp />
     </div>
   );
 }
