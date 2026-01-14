@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useNotification } from './NotificationContext';
 import JSZip from 'jszip';
 import './UnzipperApp.css';
 
@@ -6,6 +7,7 @@ function UnzipperApp() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileNames, setFileNames] = useState<string[]>([]);
   const [error, setError] = useState('');
+  const { showNotification } = useNotification();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setError('');
@@ -14,6 +16,7 @@ function UnzipperApp() {
     if (!file) return;
     if (!file.name.endsWith('.zip')) {
       setError('Please select a .zip file.');
+      showNotification('Please select a .zip file.');
       return;
     }
     try {
@@ -22,6 +25,7 @@ function UnzipperApp() {
       setFileNames(names);
     } catch {
       setError('Failed to unzip file.');
+      showNotification('Failed to unzip file.');
     }
   };
 

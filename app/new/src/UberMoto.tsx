@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from './NotificationContext';
 import './UberMoto.css';
 
 interface RideRequest {
@@ -14,6 +15,7 @@ function UberMoto() {
   const [pickup, setPickup] = useState('');
   const [dropoff, setDropoff] = useState('');
   const [rides, setRides] = useState<RideRequest[]>([]);
+  const { showNotification } = useNotification();
 
   const requestRide = () => {
     if (!pickup || !dropoff) return;
@@ -23,6 +25,7 @@ function UberMoto() {
     ]);
     setPickup('');
     setDropoff('');
+    showNotification('Ride requested!');
   };
 
   const acceptRide = (id: number) => {

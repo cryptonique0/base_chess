@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react';
+import { useNotification } from './NotificationContext';
 import './VideoCallApp.css';
 
-function VideoCallApp() {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const [screenStream, setScreenStream] = useState<MediaStream|null>(null);
   const [error, setError] = useState('');
+  const { showNotification } = useNotification();
 
   // Start webcam
   const startCamera = async () => {
@@ -16,6 +17,7 @@ function VideoCallApp() {
       }
     } catch {
       setError('Could not access camera/mic.');
+      showNotification('Could not access camera/mic.');
     }
   };
 
@@ -30,6 +32,7 @@ function VideoCallApp() {
       }
     } catch {
       setError('Could not share screen.');
+      showNotification('Could not share screen.');
     }
   };
 
