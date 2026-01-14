@@ -18,6 +18,7 @@ import DeviceTracker from './DeviceTracker';
 import PartnerFinder from './PartnerFinder';
 import GadgetSales from './GadgetSales';
 import RequestTechnician from './RequestTechnician';
+import AndroidCustomizer from './AndroidCustomizer';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
       <PartnerFinder />
       <GadgetSales />
       <RequestTechnician />
+      <AndroidCustomizer />
     </div>
   );
 }
