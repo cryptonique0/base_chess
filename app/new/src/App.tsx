@@ -17,6 +17,7 @@ import BodyTempDetector from './BodyTempDetector';
 import DeviceTracker from './DeviceTracker';
 import PartnerFinder from './PartnerFinder';
 import GadgetSales from './GadgetSales';
+import RequestTechnician from './RequestTechnician';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
       <DeviceTracker />
       <PartnerFinder />
       <GadgetSales />
+      <RequestTechnician />
     </div>
   );
 }
