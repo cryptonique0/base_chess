@@ -25,6 +25,7 @@ function AndroidCustomizer() {
         <label>Wallpaper:</label>
         <div className="wallpaper-list">
           {wallpapers.map((url, idx) => (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               key={idx}
               src={url}
