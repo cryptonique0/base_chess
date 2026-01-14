@@ -4,6 +4,7 @@ import ChessBoard from './ChessBoard';
 import UberMoto from './UberMoto';
 import ConnectSupport from './ConnectSupport';
 import KunuMasaRestaurant from './KunuMasaRestaurant';
+import AdmittedStudents from './AdmittedStudents';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <UberMoto />
       <ConnectSupport />
       <KunuMasaRestaurant />
+      <AdmittedStudents />
     </div>
   );
 }
