@@ -3,6 +3,7 @@ import './App.css';
 import ChessBoard from './ChessBoard';
 import UberMoto from './UberMoto';
 import ConnectSupport from './ConnectSupport';
+import KunuMasaRestaurant from './KunuMasaRestaurant';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <ChessBoard />
       <UberMoto />
       <ConnectSupport />
+      <KunuMasaRestaurant />
     </div>
   );
 }
