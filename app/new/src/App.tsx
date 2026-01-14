@@ -10,6 +10,7 @@ import HomeElectricalGuide from './HomeElectricalGuide';
 import VideoCallApp from './VideoCallApp';
 import UnzipperApp from './UnzipperApp';
 import ForeignCars from './ForeignCars';
+import IslamicLoanApp from './IslamicLoanApp';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <VideoCallApp />
       <UnzipperApp />
       <ForeignCars />
+      <IslamicLoanApp />
     </div>
   );
 }
