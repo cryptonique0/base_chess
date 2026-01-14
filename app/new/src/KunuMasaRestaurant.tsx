@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from './NotificationContext';
 import './KunuMasaRestaurant.css';
 
 interface Order {
@@ -16,6 +17,7 @@ function KunuMasaRestaurant() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selected, setSelected] = useState('Kunu');
   const [quantity, setQuantity] = useState(1);
+  const { showNotification } = useNotification();
 
   const addOrder = () => {
     if (!selected || quantity < 1) return;
@@ -24,6 +26,7 @@ function KunuMasaRestaurant() {
       { id: orders.length + 1, item: selected, quantity }
     ]);
     setQuantity(1);
+    showNotification(`${quantity} x ${selected} added to order!`);
   };
 
   const total = orders.reduce((sum, o) => {
