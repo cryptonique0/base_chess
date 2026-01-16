@@ -1,0 +1,9 @@
+[project]
+name = "notary"
+version = "0.1.0"
+
+[chain]
+network = "standard"
+
+[dependencies]
+# none
