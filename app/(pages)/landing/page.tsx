@@ -158,7 +158,7 @@ export default function LandingPage() {
       {/* Features Section */}
       <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4">
+          <Badge variant="primary" className="mb-4">
             Platform Features
           </Badge>
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">

@@ -1,6 +1,12 @@
 'use client';
 
-export default function GlobalError() {
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <html>
       <body style={{
@@ -18,6 +24,20 @@ export default function GlobalError() {
       }}>
         <h1 style={{ fontSize: '4rem', marginBottom: '1rem' }}>Error</h1>
         <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Something went wrong!</p>
+        <button 
+          onClick={() => reset()}
+          style={{
+            padding: '0.75rem 1.5rem',
+            background: '#667eea',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '1rem',
+            cursor: 'pointer'
+          }}
+        >
+          Try again
+        </button>
       </body>
     </html>
   );
