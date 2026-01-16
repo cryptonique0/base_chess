@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <MobileAppLayout>
-      <div className="relative flex h-screen max-w-md mx-auto flex-col overflow-hidden bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+      <div className="relative flex min-h-screen max-w-md mx-auto flex-col overflow-hidden bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
         {/* Header with Glassmorphism Effect */}
         <header className="flex flex-col px-4 pt-4 pb-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl z-20 border-b border-slate-200/50 dark:border-slate-700/50 shadow-sm">
           {/* Top Bar with Profile & Balance */}
