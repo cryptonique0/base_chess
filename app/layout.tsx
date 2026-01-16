@@ -3,6 +3,7 @@ import { Inter, Source_Code_Pro } from "next/font/google";
 import ClientProviders from "./ClientProviders";
 import { minikitConfig } from "../minikit.config";
 import "./globals.css";
+import "./styles/ui.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
